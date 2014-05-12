@@ -1,0 +1,22 @@
+{
+  "name": "github-webhook-handler",
+  "version": "0.0.0",
+  "description": "Web handler / middleware for processing GitHub Webhooks",
+  "main": "github-webhook-handler.js",
+  "scripts": {
+    "test": "node test.js"
+  },
+  "keywords": [
+    "github",
+    "webhooks"
+  ],
+  "author": "Rod Vagg <r@va.gg> (http://r.va.gg)",
+  "license": "MIT",
+  "dependencies": {
+    "bl": "^0.8.0"
+  },
+  "devDependencies": {
+    "tape": "^2.12.3",
+    "through2": "^0.4.1"
+  }
+}
