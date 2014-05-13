@@ -13,10 +13,10 @@
   "author": "Rod Vagg <r@va.gg> (http://r.va.gg)",
   "license": "MIT",
   "dependencies": {
-    "bl": "^0.8.0"
+    "bl": "~0.8.0"
   },
   "devDependencies": {
-    "tape": "^2.12.3",
-    "through2": "^0.4.1"
+    "tape": "~2.12.3",
+    "through2": "~0.4.1"
   }
 }
