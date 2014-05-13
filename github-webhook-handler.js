@@ -20,10 +20,8 @@ function create (options) {
     throw new TypeError('must provide a \'secret\' option')
 
   // make it an EventEmitter, sort of
+  handler.__proto__ = EventEmitter.prototype
   EventEmitter.call(handler)
-  Object.keys(EventEmitter.prototype).forEach(function (k) {
-    handler[k] = EventEmitter.prototype[k]
-  })
 
   return handler
 
