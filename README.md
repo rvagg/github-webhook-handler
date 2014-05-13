@@ -11,7 +11,7 @@ This library is a small handler (or "middleware" if you must) for Node.js web se
 ```js
 var http = require('http')
 var createHandler = require('github-webhook-handler')
-var handler = createHandler({ url: '/webhook', secret: 'myhashsecret' })
+var handler = createHandler({ path: '/webhook', secret: 'myhashsecret' })
 
 http.createServer(function (req, res) {
   handler(req, res, function (err) {
@@ -43,7 +43,7 @@ handler.on('issues', function (event) {
 
 github-webhook-handler exports a single function, use this function to *create* a webhook handler by passing in an *options* object. Your options object should contain:
 
- * `"url"`: the complete case sensitive URL to match when looking at `req.url` for incoming requests. Any request not matching this URL will cause the callback function to the handler to be called (sometimes called the `next` handler).
+ * `"path"`: the complete case sensitive path/route to match when looking at `req.url` for incoming requests. Any request not matching this path will cause the callback function to the handler to be called (sometimes called the `next` handler).
  * `"secret"`: this is a hash key used for creating the SHA-1 HMAC signature of the JSON blob sent by GitHub. You should register the same secret key with GitHub. Any request not delivering a `X-Hub-Signature` that matches the signature generated using this key against the blob will be rejected and cause an `'error'` event (also the callback will be called with an `Error` object).
 
 The resulting **handler** function acts like a common "middleware" handler that you can insert into a processing chain. It takes `request`, `response`, and `callback` arguments. The `callback` is not called if the request is successfully handled, otherwise it is called either with an `Error` or no arguments.

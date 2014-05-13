@@ -13,8 +13,8 @@ function create (options) {
   if (typeof options != 'object')
     throw new TypeError('must provide an options object')
 
-  if (typeof options.url != 'string')
-    throw new TypeError('must provide a \'url\' option')
+  if (typeof options.path != 'string')
+    throw new TypeError('must provide a \'path\' option')
 
   if (typeof options.secret != 'string')
     throw new TypeError('must provide a \'secret\' option')
@@ -27,7 +27,7 @@ function create (options) {
 
 
   function handler (req, res, callback) {
-    if (req.url !== options.url)
+    if (req.url !== options.path)
       return callback()
 
     function hasError (msg) {

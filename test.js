@@ -45,14 +45,14 @@ test('handler without full options throws', function (t) {
 
   t.throws(handler, /must provide an options object/, 'throws if no options')
 
-  t.throws(handler.bind(null, {}), /must provide a 'url' option/, 'throws if no url option')
+  t.throws(handler.bind(null, {}), /must provide a 'path' option/, 'throws if no path option')
 
-  t.throws(handler.bind(null, { url: '/' }), /must provide a 'secret' option/, 'throws if no secret option')
+  t.throws(handler.bind(null, { path: '/' }), /must provide a 'secret' option/, 'throws if no secret option')
 })
 
 
 test('handler ignores invalid urls', function (t) {
-  var options = { url: '/some/url', secret: 'bogus' }
+  var options = { path: '/some/url', secret: 'bogus' }
     , h       = handler(options)
 
   t.plan(6)
@@ -77,7 +77,7 @@ test('handler ignores invalid urls', function (t) {
 
 
 test('handler accepts valid urls', function (t) {
-  var options = { url: '/some/url', secret: 'bogus' }
+  var options = { path: '/some/url', secret: 'bogus' }
     , h       = handler(options)
 
   t.plan(1)
@@ -95,7 +95,7 @@ test('handler accepts valid urls', function (t) {
 test('handler is an EventEmitter', function (t) {
   t.plan(5)
 
-  var h = handler({ url: '/', secret: 'bogus' })
+  var h = handler({ path: '/', secret: 'bogus' })
 
   t.equal(typeof h.on, 'function', 'has h.on()')
   t.equal(typeof h.emit, 'function', 'has h.emit()')
@@ -116,7 +116,7 @@ test('handler accepts a signed blob', function (t) {
 
   var obj  = { some: 'github', object: 'with', properties: true }
     , json = JSON.stringify(obj)
-    , h    = handler({ url: '/', secret: 'bogus' })
+    , h    = handler({ path: '/', secret: 'bogus' })
     , req  = mkReq('/')
     , res  = mkRes()
 
@@ -146,7 +146,7 @@ test('handler accepts a signed blob with alt event', function (t) {
 
   var obj  = { some: 'github', object: 'with', properties: true }
     , json = JSON.stringify(obj)
-    , h    = handler({ url: '/', secret: 'bogus' })
+    , h    = handler({ path: '/', secret: 'bogus' })
     , req  = mkReq('/')
     , res  = mkRes()
 
@@ -180,7 +180,7 @@ test('handler rejects a badly signed blob', function (t) {
 
   var obj  = { some: 'github', object: 'with', properties: true }
     , json = JSON.stringify(obj)
-    , h    = handler({ url: '/', secret: 'bogus' })
+    , h    = handler({ path: '/', secret: 'bogus' })
     , req  = mkReq('/')
     , res  = mkRes()
 
