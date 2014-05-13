@@ -52,6 +52,15 @@ The **handler** function is also an `EventEmitter` that you can register to list
 
 See the [GitHub Webhooks documentation](https://developer.github.com/webhooks/) for more details on the events you can receive.
 
+Included in the distribution is an *events.json* file which maps the event names to descriptions taken from the API:
+
+```js
+var events = require('github-webhook-handler/events')
+Object.keys(events).forEach(function (event) {
+  console.log(event, '=', events[event])
+})
+```
+
 ## License
 
 **github-webhook-handler** is Copyright (c) 2014 Rod Vagg [@rvagg](https://twitter.com/rvagg) and licensed under the MIT License. All rights not explicitly granted in the MIT License are reserved. See the included [LICENSE.md](./LICENSE.md) file for more details.
