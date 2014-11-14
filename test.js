@@ -87,6 +87,11 @@ test('handler accepts valid urls', function (t) {
     t.fail(false, 'should not call')
   })
 
+  h(mkReq('/some/url?test=param'), mkRes(), function (err) {
+    t.error(err)
+    t.fail(false, 'should not call')
+  })
+
   setTimeout(t.ok.bind(t, true, 'done'))
 })
 

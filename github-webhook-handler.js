@@ -27,7 +27,7 @@ function create (options) {
 
 
   function handler (req, res, callback) {
-    if (req.url !== options.path)
+    if (req.url.split('?').shift() !== options.path)
       return callback()
 
     function hasError (msg) {
