@@ -5,7 +5,7 @@ const test     = require('tape')
 
 
 function signBlob (key, blob) {
-  return 'sha1=' + 
+  return 'sha1=' +
   crypto.createHmac('sha1', key).update(blob).digest('hex')
 }
 
@@ -207,4 +207,45 @@ test('handler rejects a badly signed blob', function (t) {
   process.nextTick(function () {
     req.end(json)
   })
+})
+
+test('handler responds on a bl error', function (t) {
+  t.plan(4)
+
+  var obj  = { some: 'github', object: 'with', properties: true }
+    , json = JSON.stringify(obj)
+    , h    = handler({ path: '/', secret: 'bogus' })
+    , req  = mkReq('/')
+    , res  = mkRes()
+
+  req.headers['x-hub-signature'] = signBlob('bogus', json)
+  req.headers['x-github-event']  = 'issue'
+
+  h.on('push', function (event) {
+    t.fail(true, 'should not get here!')
+  })
+
+  h.on('issue', function (event) {
+    t.fail(true, 'should never get here!')
+  })
+
+  h.on('error', function(err) {
+    t.ok(err, 'got an error')
+    t.equal(res.$statusCode, 400, 'correct status code')
+  });
+
+  h(req, res, function (err) {
+    t.ok(err)
+  })
+
+  var end = res.end
+  res.end = function () {
+    t.equal(res.$statusCode, 400, 'correct status code')
+  }
+
+  req.write('{')
+  process.nextTick(function() {
+    req.emit('error', new Error('simulated explosion'))
+  });
+
 })
