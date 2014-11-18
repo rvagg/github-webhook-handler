@@ -55,8 +55,7 @@ function create (options) {
 
     req.pipe(bl(function (err, data) {
       if (err) {
-        handler.emit('error', err, req)
-        return callback(err)
+        return hasError(err.message)
       }
 
       var obj
