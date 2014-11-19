@@ -21,7 +21,7 @@ http.createServer(function (req, res) {
 }).listen(7777)
 
 handler.on('error', function (err) {
-  console.err('Error:', err.message)
+  console.error('Error:', err.message)
 })
 
 handler.on('push', function (event) {
