@@ -11,6 +11,10 @@
     "webhooks"
   ],
   "author": "Rod Vagg <r@va.gg> (http://r.va.gg)",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rvagg/github-webhook-handler.git"
+  },
   "license": "MIT",
   "dependencies": {
     "bl": "~0.8.0"
