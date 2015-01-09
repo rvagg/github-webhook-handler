@@ -2,6 +2,7 @@ const test     = require('tape')
     , crypto   = require('crypto')
     , handler  = require('./')
     , through2 = require('through2')
+    , series   = require('run-series')
 
 
 function signBlob (key, blob) {
@@ -93,6 +94,65 @@ test('handler accepts valid urls', function (t) {
   })
 
   setTimeout(t.ok.bind(t, true, 'done'))
+})
+
+
+test('handler can reject events', function (t) {
+  var acceptableEvents   = {
+          'undefined'                     : undefined
+        , 'a string equal to the event'   : 'bogus'
+        , 'a string equal to *'           : '*'
+        , 'an array containing the event' : ['bogus']
+        , 'an array containing *'         : ['not-bogus', '*']
+      }
+    , unacceptableEvents = {
+          'a string not equal to the event or *'   : 'not-bogus'
+        , 'an array not containing the event or *' : ['not-bogus']
+      }
+    , acceptable         = Object.keys(acceptableEvents)
+    , unacceptable       = Object.keys(unacceptableEvents)
+    , acceptableTests    = acceptable.map(function (events) {
+        return acceptableReq.bind(null, events)
+      })
+    , unacceptableTests  = unacceptable.map(function (events) {
+        return unacceptableReq.bind(null, events)
+      })
+
+  t.plan(acceptable.length + unacceptable.length)
+  series(acceptableTests.concat(unacceptableTests))
+
+  function acceptableReq (events, callback) {
+    var h = handler({
+        path    : '/some/url'
+      , secret  : 'bogus'
+      , events  : acceptableEvents[events]
+    })
+
+    h(mkReq('/some/url'), mkRes(), function (err) {
+      t.error(err)
+      t.fail(false, 'should not call')
+    })
+
+    setTimeout(function () {
+      t.ok(true, 'accepted because options.events was ' + events)
+      callback()
+    })
+  }
+
+  function unacceptableReq (events, callback) {
+    var h = handler({
+        path    : '/some/url'
+      , secret  : 'bogus'
+      , events  : unacceptableEvents[events]
+    })
+
+    h.on('error', function () {})
+
+    h(mkReq('/some/url'), mkRes(), function (err) {
+      t.ok(err, 'rejected because options.events was ' + events)
+      callback()
+    })
+  }
 })
 
 

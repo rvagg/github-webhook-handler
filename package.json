@@ -20,6 +20,7 @@
     "bl": "~0.8.0"
   },
   "devDependencies": {
+    "run-series": "~1.0.2",
     "tape": "~2.12.3",
     "through2": "~0.4.1"
   }
