@@ -72,12 +72,15 @@ function create (options) {
       res.writeHead(200, { 'content-type': 'application/json' })
       res.end('{"ok":true}')
 
-      handler.emit(event, {
+      var emitData = {
           event   : event
         , id      : id
         , payload : obj
         , url     : req.url
-      })
+      }
+
+      handler.emit(event, emitData)
+      handler.emit('*', emitData)
     }))
   }
 }

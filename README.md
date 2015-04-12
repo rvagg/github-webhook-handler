@@ -62,6 +62,8 @@ Object.keys(events).forEach(function (event) {
 })
 ```
 
+Additionally, there is a special `'*'` even you can listen to in order to receive _everything_.
+
 ## License
 
 **github-webhook-handler** is Copyright (c) 2014 Rod Vagg [@rvagg](https://twitter.com/rvagg) and licensed under the MIT License. All rights not explicitly granted in the MIT License are reserved. See the included [LICENSE.md](./LICENSE.md) file for more details.
