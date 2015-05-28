@@ -77,7 +77,7 @@ function create (options) {
         , id      : id
         , payload : obj
         , protocol: req.protocol
-        , host    : req.get('host')
+        , host    : req.headers['host']
         , url     : req.url
       }
 
