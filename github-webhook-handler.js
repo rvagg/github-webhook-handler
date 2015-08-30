@@ -2,6 +2,7 @@ const EventEmitter = require('events').EventEmitter
     , inherits     = require('util').inherits
     , crypto       = require('crypto')
     , bl           = require('bl')
+    , bufferEq     = require('buffer-equal-constant-time')
 
 
 function signBlob (key, blob) {
@@ -59,8 +60,9 @@ function create (options) {
       }
 
       var obj
+      var computedSig = new Buffer(signBlob(options.secret, data))
 
-      if (sig !== signBlob(options.secret, data))
+      if (!bufferEq(new Buffer(sig), computedSig))
         return hasError('X-Hub-Signature does not match blob signature')
 
       try {
