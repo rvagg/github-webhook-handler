@@ -72,6 +72,9 @@ function create (options) {
       res.writeHead(200, { 'content-type': 'application/json' })
       res.end('{"ok":true}')
 
+      if (options.emit && typeof options.emit === 'function')
+        return options.emit(req.headers, obj)
+
       var emitData = {
           event   : event
         , id      : id
