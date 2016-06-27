@@ -129,7 +129,7 @@ test('handler accepts a signed blob', function (t) {
   req.headers['x-github-event']  = 'push'
 
   h.on('push', function (event) {
-    t.deepEqual(event, { event: 'push', id: 'bogus', payload: obj, url: '/' })
+    t.deepEqual(event, { event: 'push', id: 'bogus', payload: obj, url: '/', host: undefined, protocol: undefined })
     t.equal(res.$statusCode, 200, 'correct status code')
     t.deepEqual(res.$headers, { 'content-type': 'application/json' })
     t.equal(res.$end, '{"ok":true}', 'got correct content')
@@ -163,7 +163,7 @@ test('handler accepts a signed blob with alt event', function (t) {
   })
 
   h.on('issue', function (event) {
-    t.deepEqual(event, { event: 'issue', id: 'bogus', payload: obj, url: '/' })
+    t.deepEqual(event, { event: 'issue', id: 'bogus', payload: obj, url: '/', host: undefined, protocol: undefined })
     t.equal(res.$statusCode, 200, 'correct status code')
     t.deepEqual(res.$headers, { 'content-type': 'application/json' })
     t.equal(res.$end, '{"ok":true}', 'got correct content')

@@ -17,11 +17,11 @@
   },
   "license": "MIT",
   "dependencies": {
-    "bl": "~0.9.4",
+    "bl": "~1.1.2",
     "buffer-equal-constant-time": "~1.0.1"
   },
   "devDependencies": {
-    "tape": "~2.12.3",
-    "through2": "~0.4.1"
+    "tape": "~4.6.0",
+    "through2": "~2.0.1"
   }
 }
