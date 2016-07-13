@@ -20,6 +20,14 @@ function create (options) {
   if (typeof options.secret != 'string')
     throw new TypeError('must provide a \'secret\' option')
 
+  var events
+
+  if (typeof options.events == 'string' && options.events != '*')
+    events = [ options.events ]
+
+  else if (Array.isArray(options.events) && options.events.indexOf('*') == -1)
+    events = options.events
+
   // make it an EventEmitter, sort of
   handler.__proto__ = EventEmitter.prototype
   EventEmitter.call(handler)
@@ -53,6 +61,9 @@ function create (options) {
 
     if (!id)
       return hasError('No X-Github-Delivery found on request')
+
+    if (events && events.indexOf(event) == -1)
+      return hasError('X-Github-Event is not acceptable')
 
     req.pipe(bl(function (err, data) {
       if (err) {
