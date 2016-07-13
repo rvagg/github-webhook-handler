@@ -21,7 +21,7 @@
     "buffer-equal-constant-time": "~1.0.1"
   },
   "devDependencies": {
-    "run-series": "~1.0.2",
+    "run-series": "~1.1.4",
     "tape": "~4.6.0",
     "through2": "~2.0.1"
   }
