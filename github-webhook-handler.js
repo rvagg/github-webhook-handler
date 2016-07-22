@@ -81,8 +81,7 @@ function create (options) {
       } catch (e) {
         return hasError(e)
       }
-
-      res.writeHead(200, { 'content-type': 'application/json' })
+      
       res.end('{"ok":true}')
 
       var emitData = {
