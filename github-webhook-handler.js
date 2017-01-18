@@ -9,15 +9,18 @@ function signBlob (key, blob) {
   return 'sha1=' + crypto.createHmac('sha1', key).update(blob).digest('hex')
 }
 
+function isObject(obj) {
+  return Object.prototype.toString.apply(obj) === '[object Object]'
+}
 
 function create (options) {
-  if (typeof options != 'object')
+  if (!isObject(options))
     throw new TypeError('must provide an options object')
 
   if (typeof options.path != 'string')
     throw new TypeError('must provide a \'path\' option')
 
-  if (typeof options.secret != 'string')
+  if (typeof options.secret != 'string' && !isObject(options))
     throw new TypeError('must provide a \'secret\' option')
 
   var events
@@ -70,8 +73,14 @@ function create (options) {
         return hasError(err.message)
       }
 
-      var obj
-      var computedSig = new Buffer(signBlob(options.secret, data))
+      var obj, appId, appSecret
+      if (isObject(options.secret)) {
+        appId = req.url.split('id=').pop().split('&').shift()
+        appSecret = options.secret[appId]
+      } else {
+        appSecret = options.secret
+      }
+      var computedSig = new Buffer(signBlob(appSecret, data))
 
       if (!bufferEq(new Buffer(sig), computedSig))
         return hasError('X-Hub-Signature does not match blob signature')
@@ -92,6 +101,7 @@ function create (options) {
         , protocol: req.protocol
         , host    : req.headers['host']
         , url     : req.url
+        , appId   : appId
       }
 
       handler.emit(event, emitData)
