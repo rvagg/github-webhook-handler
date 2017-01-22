@@ -7,6 +7,12 @@ GitHub allows you to register **[Webhooks](https://developer.github.com/webhooks
 
 This library is a small handler (or "middleware" if you must) for Node.js web servers that handles all the logic of receiving and verifying webhook requests from GitHub.
 
+## Tips
+
+In Github Webhooks settings, Content type must be `application/json`.
+
+`application/x-www-form-urlencoded` won't work at present.
+
 ## Example
 
 ```js
@@ -39,6 +45,8 @@ handler.on('issues', function (event) {
     event.payload.issue.title)
 })
 ```
+
+for multi handlers, please see [multi-handlers](https://github.com/rvagg/github-webhook-handler/pull/22).
 
 ## API
 
