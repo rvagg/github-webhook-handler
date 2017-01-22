@@ -46,7 +46,7 @@ handler.on('issues', function (event) {
 })
 ```
 
-for multi handlers, please see [multi-handlers](https://github.com/rvagg/github-webhook-handler/pull/22).
+for multiple handlers, please see [multiple-handlers-issue](https://github.com/rvagg/github-webhook-handler/pull/22#issuecomment-274301907).
 
 ## API
 
