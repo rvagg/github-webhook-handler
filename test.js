@@ -11,8 +11,9 @@ function signBlob (key, blob) {
 }
 
 
-function mkReq (url) {
+function mkReq (url, method) {
   var req = through2()
+  req.method = method || 'POST'
   req.url = url
   req.headers = {
       'x-hub-signature'   : 'bogus'
@@ -76,6 +77,22 @@ test('handler ignores invalid urls', function (t) {
   })
 })
 
+test('handler ingores non-POST requests', function (t) {
+  var options = { path: '/some/url', secret: 'bogus' }
+    , h       = handler(options)
+
+  t.plan(4)
+
+  h(mkReq('/some/url', 'GET'), mkRes(), function (err) {
+    t.error(err)
+    t.ok(true, 'request was ignored')
+  })
+
+  h(mkReq('/some/url?test=param', 'GET'), mkRes(), function (err) {
+    t.error(err)
+    t.ok(true, 'request was ignored')
+  })
+})
 
 test('handler accepts valid urls', function (t) {
   var options = { path: '/some/url', secret: 'bogus' }
