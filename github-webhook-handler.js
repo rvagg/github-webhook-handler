@@ -95,7 +95,6 @@ function create (options) {
       }
 
       handler.emit(event, emitData)
-      handler.emit('*', emitData)
     }))
   }
 }
