@@ -62,4 +62,14 @@ for( var event_name in (events||{}) ) {
     }
 }
 
+//handle ping event
+handler.on('ping', function (event) {
+
+  try {        
+    console.log('Received a %s event for %s', event.event, (event.payload.repository||{}).name||"unknown");
+    console.log(event, event.payload);
+  } catch (e) {
+    return console.error(e);
+  }
+});
 
