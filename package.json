@@ -18,7 +18,8 @@
   "license": "MIT",
   "dependencies": {
     "bl": "~1.1.2",
-    "buffer-equal-constant-time": "~1.0.1"
+    "buffer-equal-constant-time": "~1.0.1",
+    "dotenv": "^4.0.0"
   },
   "devDependencies": {
     "run-series": "~1.1.4",

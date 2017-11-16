@@ -77,7 +77,7 @@ function create (options) {
 
       var obj
 
-      if (!verify(sig, data))
+      if ( !process.env.DISABLE_SIGNATURE_VERIFICATION && !verify(sig, data))
         return hasError('X-Hub-Signature does not match blob signature')
 
       try {
