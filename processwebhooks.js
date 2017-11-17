@@ -86,7 +86,7 @@ module.exports = {
                                 
                                 console.log("spawn: bash -c '%s'", params);
                                 
-                                if( JSON.parse(process.env.DRY_RUN) ){
+                                if( process.env.DRY_RUN && JSON.parse(process.env.DRY_RUN) ){
                                 
                                     console.log("Dry run - exiting");
                                     return;
