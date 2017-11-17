@@ -49,7 +49,7 @@ main() {
     case "$EVENT" in
         addbranch)
             git checkout -b "$BRANCH" upstream/"$BRANCH"
-            #git push -u origin "$BRANCH"
+            git push -u origin "$BRANCH"
             git remote rm upstream
             
             exit 0
@@ -58,7 +58,7 @@ main() {
 
         syncbranch)
             git checkout "$BRANCH"
-            #git merge upstream/"$BRANCH"
+            git merge upstream/"$BRANCH"
             git remote rm upstream
             
             exit 0
