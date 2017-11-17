@@ -5,7 +5,7 @@ echo "GITHUB envars set:" `env | awk -F "=" '{print $1}' | grep "GITHUB.*"`
 
 ## Usage: github-webhook EVENT
 ##
-## Perform github tasks dependant on webhook EVENT
+## Perform github tasks dependant on webhook EVENT ORIGIN UPSTREAM BRANCH
 ##
 ## Options:
 ##   -h, --help    Display this message.
@@ -19,6 +19,9 @@ main() {
     if [ $# -eq 0 ];
         then usage 2>&1
     fi
+    if [ $# -lt 4 ];
+        then usage 2>&1
+    fi
     while [ $# -gt 0 ]; do
         case $1 in
             (-h|--help) usage 2>&1;;
@@ -30,17 +33,34 @@ main() {
     done
 
     EVENT="${1}"
+    BRANCH="${2}"
+    REPO="${3}"
+    UPSTREAM="${4}"
+
+    LOCAL_DIR=${REPO##*/}
     
-    ## LOCAL=${REPO##*/}
+    mkdir "repo-$LOCAL_DIR"
+    cd "repo-$LOCAL_DIR"
+    
+    git clone https://"$GITHUB_OAUTH"@github.com/"$REPO"
+    git remote add upstream https://"$GITHUB_OAUTH"@github.com/"$UPSTREAM"
+    git fetch upstream
         
     case "$EVENT" in
-        push)
-            echo $GITHUB_repository
-            # | awk -F ":" '{print $2}' | grep "forks_url.*"
-            #get forks
-            FORK_URL = echo $GITHUB_repository | awk -F ":" '{print $2}' | grep "forks_url.*"
-            echo $FORK_URL
-            #git clone https://"$GITHUB_OAUTH"@github.com/"$REPO"                
+        addbranch)
+            git checkout -b "$BRANCH" upstream/"$BRANCH"
+            #git push -u origin "$BRANCH"
+            git remote rm upstream
+            
+            exit 0
+            break
+            ;;
+
+        syncbranch)
+            git checkout "$BRANCH"
+            #git merge upstream/"$BRANCH"
+            git remote rm upstream
+            
             exit 0
             break
             ;;

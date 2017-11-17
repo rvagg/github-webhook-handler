@@ -1,10 +1,16 @@
 require('dotenv').config();
+const { spawn } = require('child_process');
 
-const url = require('url');
+const url  = require('url');
+const util = require('util');
 
 var https = require('https'),
     fs  = require('fs'),
     tmp = require('tmp');
+
+//https://help.github.com/articles/configuring-a-remote-for-a-fork/
+//https://help.github.com/articles/syncing-a-fork/
+//https://stackoverflow.com/questions/4410091/github-import-upstream-branch-into-fork
 
 module.exports = {
     push : function(event) { // https://developer.github.com/v3/activity/events/types/#pushevent
@@ -19,7 +25,9 @@ module.exports = {
               }            
         };
         
-        var isMaster = 'refs/heads/master' == event.payload.ref;
+        var isMaster   = 'refs/heads/master' == event.payload.ref,
+            branch     = event.payload.ref.split('/').slice(-1)[0],
+            autofollow = "autofollow-" + branch;
         
         //console.log(options);
         
@@ -43,15 +51,39 @@ module.exports = {
 
                     if( re.test( aFork.full_name) ){
                         
-                        //console.log("Found %s", aFork.full_name);
-                        
                         //this is one of 'our' forks
                         
-                        //Upstream repo was push to branch :. we need to find matching downstream branch
-                        if( !isMaster ) {
+                        //sync to master
+                        if( isMaster ) {
                             
-                            options.path = url.parse(aFork.branches_url).pathname;
-                            console.log(options);
+                            var params = util.format("%s/%s %s %s %s %s", __dirname, 'github-webhook.sh', "syncbranch", autofollow, aFork.full_name, event.payload.repository.full_name);
+
+                            //hand over to bash
+                            var command = spawn('bash',['-c', params], {
+                                          env  : Object.assign({}, process.env)
+                                        });
+                                        
+                            command.stdout.on('data', (data) => {
+                                console.log(data.toString());
+                            });
+                            
+                            command.stderr.on('data', (data) => {
+                                console.error(`stderr: ${data}`);
+                            });
+                            
+                            command.on('close', (code) => {
+                                
+                                if (code !== 0) {
+                                  console.log(`process exited with code ${code}`);
+                                }
+                            });
+                            
+                        }
+                        else {
+                            //Upstream repo was push to branch :. we need to find matching downstream branch
+                        
+                            options.path = url.parse(aFork.branches_url.replace('{/branch}', '')).pathname;
+                            //console.log(options);
                             
                             https.get(options, (res) => {
                                 
@@ -63,9 +95,36 @@ module.exports = {
                                 
                                 res.on('end', (d) => {
                     
-                                    var oBranches = JSON.parse(sBranchResponse);
+                                    var oBranches = JSON.parse(sBranchResponse),
+                                        found_branch = false;
+
+                                    //loop branches                              
+                                    for( var iBranchIndex in oBranches ) {
+
+                                        found_branch = found_branch || oBranches[ iBranchIndex ].name == autofollow;
+                                    }
                                     
-                                    console.log(oBranches);
+                                    var params = util.format("%s/%s %s %s %s %s", __dirname, 'github-webhook.sh', !found_branch ? "addbranch" : "syncbranch", autofollow, aFork.full_name, event.payload.repository.full_name);
+                                    
+                                    //hand over to bash
+                                    var command = spawn('bash',['-c', params], {
+                                                  env  : Object.assign({}, process.env)
+                                                });
+                                                
+                                    command.stdout.on('data', (data) => {
+                                        console.log(data.toString());
+                                    });
+                                    
+                                    command.stderr.on('data', (data) => {
+                                        console.error(`stderr: ${data}`);
+                                    });
+                                    
+                                    command.on('close', (code) => {
+                                        
+                                        if (code !== 0) {
+                                          console.log(`process exited with code ${code}`);
+                                        }
+                                    });
                                 });                                
                                 
                             }).on('error', (e) => {

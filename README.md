@@ -5,8 +5,7 @@ Fork of https://github.com/rvagg/github-webhook-handler
 [![NPM](https://nodei.co/npm/github-webhook.png?downloads=true&downloadRank=true)](https://nodei.co/npm/github-webhook/)
 [![NPM](https://nodei.co/npm-dl/github-webhook.png?months=6&height=3)](https://nodei.co/npm/github-webhook/)
 
-GitHub allows you to register **[Webhooks](https://developer.github.com/webhooks/)** for your repositories. Each time an event occurs on your repository, whether it be pushing code, filling issues or creating pull requests, the webhook address you register can be configured to be pinged with details.
-Hands over processing to a bash script
+GitHub allows you to register **[Webhooks](https://developer.github.com/webhooks/)** for your repositories. Each tie an event occurs on your repository, whether it be pushing code, filling issues or creating pull requests, the webhook address you register can be configured to be pinged with details.
 
 ## Tips
 
