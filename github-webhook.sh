@@ -51,7 +51,7 @@ main() {
             git checkout -b "$BRANCH" upstream/"$BRANCH"
             git push -u origin "$BRANCH"
             git remote rm upstream
-            
+            echo "add branch complete"
             exit 0
             break
             ;;
@@ -61,6 +61,7 @@ main() {
             git merge upstream/"$BRANCH"
             git push -u origin "$BRANCH"
             git remote rm upstream
+            echo "sync branch complete"
             
             exit 0
             break
