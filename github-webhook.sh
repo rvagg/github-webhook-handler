@@ -44,6 +44,8 @@ main() {
     
     git init
     git clone https://"$GITHUB_OAUTH"@github.com/"$REPO"
+    cd $LOCAL_DIR
+    
     git remote add upstream https://"$GITHUB_OAUTH"@github.com/"$UPSTREAM"
     git fetch upstream
         
