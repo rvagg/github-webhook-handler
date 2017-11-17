@@ -107,9 +107,9 @@ module.exports = {
                                 
                                 command.on('close', (code) => {
                                     
-                                    if (code !== 0) {
-                                      console.log(`process exited with code ${code}`);
-                                    }
+                                    //if (code !== 0) {
+                                    console.log(`process exited with code ${code}`);
+                                    //}
                                 });
                             });                                
                             
