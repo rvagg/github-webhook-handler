@@ -4,7 +4,7 @@
   "description": "Web handler / middleware for processing GitHub Webhooks",
   "main": "github-webhook-handler.js",
   "scripts": {
-    "test": "node index.js"
+    "test": "node test.js"
   },
   "keywords": [
     "github",
@@ -19,7 +19,8 @@
   "dependencies": {
     "bl": "~1.1.2",
     "buffer-equal-constant-time": "~1.0.1",
-    "dotenv": "^4.0.0"
+    "dotenv": "^4.0.0",
+    "tmp": "0.0.33"
   },
   "devDependencies": {
     "run-series": "~1.1.4",

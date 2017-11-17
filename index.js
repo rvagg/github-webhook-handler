@@ -3,7 +3,6 @@ require('dotenv').config();
 var http = require('http')
 var createHandler = require('./github-webhook-handler')
 var handler = createHandler({ path: '/webhook', secret: process.env.SECRET_KEY })
-const { spawn } = require('child_process')
 var events = require('./events.json')
 
 http.createServer(function (req, res) {
@@ -29,6 +28,11 @@ for( var event_name in (events||{}) ) {
         try {        
           console.log('Received a %s event for %s', event.event, (event.payload.repository||{}).name||"unknown");
           console.log(event, event.payload);
+
+          //write to a file using utils
+var fs = require('fs');
+
+fs.writeFile('test.json', JSON.stringify({ a:1, b:2, c:3 }, null, 4));
 
           //construct envars from payload
           var envars = {};
