@@ -54,9 +54,10 @@ test('bash command executed', function (t) {
 
   h.on('push', function (event) {
     
-    //t.deepEqual(event, { event: 'push', id: 'bogus', payload: obj, url: '/', host: undefined, protocol: undefined })
-    //.equal(res.$statusCode, 200, 'correct status code')
-    //t.deepEqual(res.$headers, { 'content-type': 'application/json' })
+    t.deepEqual(event, { event: 'push', id: 'bogus', payload: obj, url: '/', host: undefined, protocol: undefined })
+    .equal(res.$statusCode, 200, 'correct status code')
+    t.deepEqual(res.$headers, { 'content-type': 'application/json' })
+    
     try {        
 
       console.log('Received a %s event for %s', event.event, (event.payload.repository||{}).name||"unknown");
