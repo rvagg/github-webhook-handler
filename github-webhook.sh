@@ -59,6 +59,7 @@ main() {
         syncbranch)
             git checkout "$BRANCH"
             git merge upstream/"$BRANCH"
+            git push -u origin "$BRANCH"
             git remote rm upstream
             
             exit 0

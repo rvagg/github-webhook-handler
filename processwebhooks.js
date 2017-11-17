@@ -83,7 +83,13 @@ module.exports = {
                                 console.log("Found autofollow branch %s : %s", autofollow, JSON.stringify(found_branch));
                                 
                                 var params = util.format("%s/%s %s %s %s %s", __dirname, 'github-webhook.sh', !found_branch ? "addbranch" : "syncbranch", autofollow, aFork.full_name, event.payload.repository.full_name);
-                                return;
+                                
+                                if( JSON.parse(process.env.DRY_RUN) ){
+                                
+                                    console.log("Dry run: bash -c %s", params);
+                                    return;
+                                }
+                                
                                 //hand over to bash
                                 var command = spawn('bash',['-c', params], {
                                               env  : Object.assign({}, process.env)
