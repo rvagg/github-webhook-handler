@@ -84,9 +84,11 @@ module.exports = {
                                 
                                 var params = util.format("%s/%s %s %s %s %s", __dirname, 'github-webhook.sh', !found_branch ? "addbranch" : "syncbranch", autofollow, aFork.full_name, event.payload.repository.full_name);
                                 
+                                console.log("spawn: bash -c '%s'", params);
+                                
                                 if( JSON.parse(process.env.DRY_RUN) ){
                                 
-                                    console.log("Dry run: bash -c %s", params);
+                                    console.log("Dry run - exiting");
                                     return;
                                 }
                                 
