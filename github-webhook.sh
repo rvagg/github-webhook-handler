@@ -40,6 +40,7 @@ main() {
 
     LOCAL_DIR=${REPO##*/}
     
+    rm -rf "repo-$LOCAL_DIR"
     mkdir "repo-$LOCAL_DIR"
     cd "repo-$LOCAL_DIR"
     
