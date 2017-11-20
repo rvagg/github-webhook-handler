@@ -16,9 +16,7 @@ usage() {
   exit 2
 } 2>/dev/null
 main() {
-    #if [ $# -eq 0 ];
-    #    then usage 2>&1
-    #fi
+
     if [ $# -lt 5 ];
         then usage 2>&1
     fi
