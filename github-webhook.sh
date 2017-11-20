@@ -50,6 +50,7 @@ main() {
     
     git remote add upstream https://"$GITHUB_OAUTH"@github.com/"$UPSTREAM_REPO"
     git fetch origin
+    git remote update
 
     case "$EVENT" in
         addbranch)
