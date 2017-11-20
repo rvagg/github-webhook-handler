@@ -114,7 +114,7 @@ module.exports = {
                             });                                
                             
                         }).on('error', (e) => {
-                            console.error(e);
+                            console.error('https.get', e);
                         });                                    
                     }
                 }
@@ -124,6 +124,6 @@ module.exports = {
           console.error(e);
         });    
         
-        //https://gist.github.com/CristinaSolana/1885435
+        
     }
 }
