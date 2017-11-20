@@ -19,7 +19,7 @@ main() {
     if [ $# -eq 0 ];
         then usage 2>&1
     fi
-    if [ $# -lt 4 ];
+    if [ $# -lt 5 ];
         then usage 2>&1
     fi
     while [ $# -gt 0 ]; do
@@ -33,9 +33,10 @@ main() {
     done
 
     EVENT="${1}"
-    BRANCH="${2}"
-    REPO="${3}"
-    UPSTREAM="${4}"
+    $BRANCH="${2}"
+    UPSTREAM_BRANCH="${3}"
+    REPO="${4}"
+    UPSTREAM_REPO="${5}"
 
     LOCAL_DIR=${REPO##*/}
     
@@ -46,14 +47,14 @@ main() {
     git clone https://"$GITHUB_OAUTH"@github.com/"$REPO"
     cd $LOCAL_DIR
     
-    git remote add upstream https://"$GITHUB_OAUTH"@github.com/"$UPSTREAM"
+    git remote add upstream https://"$GITHUB_OAUTH"@github.com/"$UPSTREAM_REPO"
     git fetch origin
 
     case "$EVENT" in
         addbranch)
-            git checkout -b "$BRANCH" upstream/"$BRANCH"
-            git push -u origin "$BRANCH"
-            git remote rm upstream
+            git checkout -b "$BRANCH" upstream/"$UPSTREAM_BRANCH"
+            #git push -u origin "$BRANCH"
+            #git remote rm upstream
             echo "add branch complete"
             
             exit 0
@@ -62,9 +63,9 @@ main() {
 
         syncbranch)
             git checkout "$BRANCH"
-            git merge upstream/"$BRANCH"
-            git push -u origin "$BRANCH"
-            git remote rm upstream
+            git merge upstream/"$UPSTREAM_BRANCH"
+            #git push -u origin "$BRANCH"
+            #git remote rm upstream
             echo "sync branch complete"
             
             exit 0
