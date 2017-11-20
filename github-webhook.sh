@@ -33,7 +33,7 @@ main() {
     done
 
     EVENT="${1}"
-    $BRANCH="${2}"
+    BRANCH="${2}"
     UPSTREAM_BRANCH="${3}"
     REPO="${4}"
     UPSTREAM_REPO="${5}"
