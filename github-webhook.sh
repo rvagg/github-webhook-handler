@@ -53,6 +53,7 @@ main() {
             git push -u origin "$BRANCH"
             git remote rm upstream
             echo "add branch complete"
+            
             exit 0
             break
             ;;
