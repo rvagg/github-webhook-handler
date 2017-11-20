@@ -5,7 +5,7 @@ echo "GITHUB envars set:" `env | awk -F "=" '{print $1}' | grep "GITHUB.*"`
 
 ## Usage: github-webhook EVENT
 ##
-## Perform github tasks dependant on webhook EVENT ORIGIN UPSTREAM BRANCH
+## Perform github tasks dependant on webhook EVENT ORIGIN BRANCH UPSTREAM_BRANCH REPO REPO_UPSTREAM
 ##
 ## Options:
 ##   -h, --help    Display this message.
