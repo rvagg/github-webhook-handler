@@ -3,6 +3,7 @@
   "version": "0.7.0",
   "description": "Web handler / middleware for processing GitHub Webhooks",
   "main": "github-webhook-handler.js",
+  "types": "github-webhook-handler.d.ts",
   "scripts": {
     "test": "node test.js"
   },
@@ -21,6 +22,7 @@
     "buffer-equal-constant-time": "~1.0.1"
   },
   "devDependencies": {
+    "@types/node": "*",
     "run-series": "~1.1.4",
     "tape": "~4.6.0",
     "through2": "~2.0.1"
