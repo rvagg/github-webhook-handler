@@ -13,4 +13,6 @@ interface handler extends EventEmitter {
     (req: IncomingMessage, res: ServerResponse, callback: (err: Error) => void): void;
 }
 
-export default function createHandler(options: CreateHandlerOptions): handler;
+declare function createHandler(options: CreateHandlerOptions): handler;
+
+export = createHandler;
