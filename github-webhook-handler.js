@@ -50,7 +50,7 @@ function create (options) {
 
       var err = new Error(msg)
 
-      handler.emit('error', err, req)
+      handler.emit('error', err, req, res)
       callback(err)
     }
 
