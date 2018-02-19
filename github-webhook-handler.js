@@ -81,7 +81,7 @@ function create (options) {
         return hasError('X-Hub-Signature does not match blob signature')
 
       try {
-        obj = JSON.parse(data.toString())
+        obj = JSON.parse(decodeURIComponent(data.toString()).replace('payload=', ''))
       } catch (e) {
         return hasError(e)
       }
