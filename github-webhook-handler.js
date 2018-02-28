@@ -37,7 +37,8 @@ function create (options) {
   }
 
   function verify (signature, data) {
-    return bufferEq(Buffer.from(signature), Buffer.from(sign(data)))
+    //return bufferEq(Buffer.from(signature), Buffer.from(sign(data)))
+    return bufferEq(new Buffer(signature), new Buffer(sign(data)))
   }
 
   function handler (req, res, callback) {
