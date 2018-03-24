@@ -4,7 +4,7 @@ import { IncomingMessage, ServerResponse } from "http";
 import { EventEmitter } from "events";
 
 interface CreateHandlerOptions {
-    path: string;
+    path?: string;
     secret: string;
     events?: string | string[];
 }

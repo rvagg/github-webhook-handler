@@ -8,7 +8,7 @@ function create (options) {
   if (typeof options != 'object')
     throw new TypeError('must provide an options object')
 
-  if (typeof options.path != 'string')
+  if (options.path && typeof options.path != 'string')
     throw new TypeError('must provide a \'path\' option')
 
   if (typeof options.secret != 'string')
@@ -41,7 +41,7 @@ function create (options) {
   }
 
   function handler (req, res, callback) {
-    if (req.url.split('?').shift() !== options.path || req.method !== 'POST')
+    if (options.path && req.url.split('?').shift() !== options.path || req.method !== 'POST')
       return callback()
 
     function hasError (msg) {
