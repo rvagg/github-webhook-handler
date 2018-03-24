@@ -41,13 +41,11 @@ function mkRes () {
 
 
 test('handler without full options throws', function (t) {
-  t.plan(4)
+  t.plan(3)
 
   t.equal(typeof handler, 'function', 'handler exports a function')
 
   t.throws(handler, /must provide an options object/, 'throws if no options')
-
-  t.throws(handler.bind(null, {}), /must provide a 'path' option/, 'throws if no path option')
 
   t.throws(handler.bind(null, { path: '/' }), /must provide a 'secret' option/, 'throws if no secret option')
 })
