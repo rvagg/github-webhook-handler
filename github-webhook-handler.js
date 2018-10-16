@@ -2,7 +2,6 @@ const EventEmitter = require('events').EventEmitter
     , inherits     = require('util').inherits
     , crypto       = require('crypto')
     , bl           = require('bl')
-    , bufferEq     = require('buffer-equal-constant-time')
 
 function create (options) {
   if (typeof options != 'object')
@@ -37,7 +36,7 @@ function create (options) {
   }
 
   function verify (signature, data) {
-    return bufferEq(Buffer.from(signature), Buffer.from(sign(data)))
+    return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(sign(data)))
   }
 
   function handler (req, res, callback) {
