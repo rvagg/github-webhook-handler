@@ -52,6 +52,14 @@ test('handler without full options throws', function (t) {
   t.throws(handler.bind(null, { path: '/' }), /must provide a 'secret' option/, 'throws if no secret option')
 })
 
+test('handler without full options throws in array', function (t) {
+  t.plan(2)
+
+  t.throws(handler.bind(null, [{}]), /must provide a 'path' option/, 'throws if no path option')
+
+  t.throws(handler.bind(null, [{ path: '/' }]), /must provide a 'secret' option/, 'throws if no secret option')
+})
+
 
 test('handler ignores invalid urls', function (t) {
   var options = { path: '/some/url', secret: 'bogus' }
@@ -101,6 +109,30 @@ test('handler accepts valid urls', function (t) {
   t.plan(1)
 
   h(mkReq('/some/url'), mkRes(), function (err) {
+    t.error(err)
+    t.fail(false, 'should not call')
+  })
+
+  h(mkReq('/some/url?test=param'), mkRes(), function (err) {
+    t.error(err)
+    t.fail(false, 'should not call')
+  })
+
+  setTimeout(t.ok.bind(t, true, 'done'))
+})
+
+test('handler accepts valid urls in Array', function (t) {
+  var options = [{ path: '/some/url', secret: 'bogus' },{ path: '/someOther/url', secret: 'bogus' }]
+    , h       = handler(options)
+
+  t.plan(1)
+
+  h(mkReq('/some/url'), mkRes(), function (err) {
+    t.error(err)
+    t.fail(false, 'should not call')
+  })
+
+  h(mkReq('/someOther/url'), mkRes(), function (err) {
     t.error(err)
     t.fail(false, 'should not call')
   })
@@ -206,7 +238,35 @@ test('handler accepts a signed blob', function (t) {
   req.headers['x-github-event']  = 'push'
 
   h.on('push', function (event) {
-    t.deepEqual(event, { event: 'push', id: 'bogus', payload: obj, url: '/', host: undefined, protocol: undefined })
+    t.deepEqual(event, { event: 'push', id: 'bogus', payload: obj, url: '/', host: undefined, protocol: undefined, path: '/' })
+    t.equal(res.$statusCode, 200, 'correct status code')
+    t.deepEqual(res.$headers, { 'content-type': 'application/json' })
+    t.equal(res.$end, '{"ok":true}', 'got correct content')
+  })
+
+  h(req, res, function (err) {
+    t.error(err)
+    t.fail(true, 'should not get here!')
+  })
+
+  process.nextTick(function () {
+    req.end(json)
+  })
+})
+
+test('handler accepts multi blob in Array', function (t) {
+  t.plan(4)
+
+  var obj  = { some: 'github', object: 'with', properties: true }
+    , json = JSON.stringify(obj)
+    , h    = handler([{ path: '/', secret: 'bogus' },{ path: '/some/url', secret: 'bogus'}])
+    , req  = mkReq('/some/url')
+    , res  = mkRes()
+  req.headers['x-hub-signature'] = signBlob('bogus', json)
+  req.headers['x-github-event']  = 'push'
+
+  h.on('push', function (event) {
+    t.deepEqual(event, { event: 'push', id: 'bogus', payload: obj, url: '/some/url', host: undefined, protocol: undefined, path: '/some/url' })
     t.equal(res.$statusCode, 200, 'correct status code')
     t.deepEqual(res.$headers, { 'content-type': 'application/json' })
     t.equal(res.$end, '{"ok":true}', 'got correct content')
@@ -240,7 +300,7 @@ test('handler accepts a signed blob with alt event', function (t) {
   })
 
   h.on('issue', function (event) {
-    t.deepEqual(event, { event: 'issue', id: 'bogus', payload: obj, url: '/', host: undefined, protocol: undefined })
+    t.deepEqual(event, { event: 'issue', id: 'bogus', payload: obj, url: '/', host: undefined, protocol: undefined, path: '/' })
     t.equal(res.$statusCode, 200, 'correct status code')
     t.deepEqual(res.$headers, { 'content-type': 'application/json' })
     t.equal(res.$end, '{"ok":true}', 'got correct content')

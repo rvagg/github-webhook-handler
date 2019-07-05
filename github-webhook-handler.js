@@ -4,7 +4,18 @@ const EventEmitter = require('events').EventEmitter
     , bl           = require('bl')
     , bufferEq     = require('buffer-equal-constant-time')
 
-function create (options) {
+function findHandler (url, arr) {
+  if (!Array.isArray(arr)) 
+    return arr
+  var ret = arr[0]
+  for (var i = 0; i < arr.length; i++) {
+    if (url.split('?')[0] === arr[i].path)
+      ret = arr[i]
+  }
+  return ret
+}
+
+function checkType (options) {
   if (typeof options != 'object')
     throw new TypeError('must provide an options object')
 
@@ -13,14 +24,19 @@ function create (options) {
 
   if (typeof options.secret != 'string')
     throw new TypeError('must provide a \'secret\' option')
+}
 
-  var events
+function create (initOptions) {
 
-  if (typeof options.events == 'string' && options.events != '*')
-    events = [ options.events ]
-
-  else if (Array.isArray(options.events) && options.events.indexOf('*') == -1)
-    events = options.events
+  var options
+  //validate type of options
+  if (Array.isArray(initOptions)) {
+    initOptions.forEach(function(item){
+      checkType(item)
+    })
+  } else {
+    checkType(initOptions)
+  }
 
   // make it an EventEmitter, sort of
   handler.__proto__ = EventEmitter.prototype
@@ -41,6 +57,16 @@ function create (options) {
   }
 
   function handler (req, res, callback) {
+    var events
+
+    options = findHandler(req.url, initOptions)
+
+    if (typeof options.events == 'string' && options.events != '*')
+      events = [ options.events ]
+  
+    else if (Array.isArray(options.events) && options.events.indexOf('*') == -1)
+      events = options.events
+      
     if (req.url.split('?').shift() !== options.path || req.method !== 'POST')
       return callback()
 
@@ -96,6 +122,7 @@ function create (options) {
         , protocol: req.protocol
         , host    : req.headers['host']
         , url     : req.url
+        , path    : options.path
       }
 
       handler.emit(event, emitData)
