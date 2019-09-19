@@ -1,4 +1,4 @@
-# github-webhook-handler
+# github-webhook-handler [![Build Status](https://travis-ci.org/rvagg/github-webhook-handler.svg?branch=master)](https://travis-ci.org/rvagg/github-webhook-handler)
 
 [![NPM](https://nodei.co/npm/github-webhook-handler.png?downloads=true&downloadRank=true)](https://nodei.co/npm/github-webhook-handler/)
 [![NPM](https://nodei.co/npm-dl/github-webhook-handler.png?months=6&height=3)](https://nodei.co/npm/github-webhook-handler/)
