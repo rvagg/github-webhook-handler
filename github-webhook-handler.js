@@ -1,44 +1,49 @@
-const EventEmitter = require('events').EventEmitter
-    , inherits     = require('util').inherits
-    , crypto       = require('crypto')
-    , bl           = require('bl')
+const EventEmitter = require('events')
+const crypto = require('crypto')
+const bl = require('bl')
 
 function findHandler (url, arr) {
-  if (!Array.isArray(arr)) 
+  if (!Array.isArray(arr)) {
     return arr
-  var ret = arr[0]
-  for (var i = 0; i < arr.length; i++) {
-    if (url.split('?')[0] === arr[i].path)
-      ret = arr[i]
   }
+
+  let ret = arr[0]
+  for (let i = 0; i < arr.length; i++) {
+    if (url === arr[i].path) {
+      ret = arr[i]
+    }
+  }
+
   return ret
 }
 
 function checkType (options) {
-  if (typeof options != 'object')
+  if (typeof options !== 'object') {
     throw new TypeError('must provide an options object')
+  }
 
-  if (typeof options.path != 'string')
+  if (typeof options.path !== 'string') {
     throw new TypeError('must provide a \'path\' option')
+  }
 
-  if (typeof options.secret != 'string')
+  if (typeof options.secret !== 'string') {
     throw new TypeError('must provide a \'secret\' option')
+  }
 }
 
 function create (initOptions) {
-
-  var options
-  //validate type of options
+  let options
+  // validate type of options
   if (Array.isArray(initOptions)) {
-    initOptions.forEach(function(item){
-      checkType(item)
-    })
+    for (let i = 0; i < initOptions.length; i++) {
+      checkType(initOptions[i])
+    }
   } else {
     checkType(initOptions)
   }
 
-  // make it an EventEmitter, sort of
-  handler.__proto__ = EventEmitter.prototype
+  // make it an EventEmitter
+  Object.setPrototypeOf(handler, EventEmitter.prototype)
   EventEmitter.call(handler)
 
   handler.sign = sign
@@ -46,9 +51,8 @@ function create (initOptions) {
 
   return handler
 
-
   function sign (data) {
-    return 'sha1=' + crypto.createHmac('sha1', options.secret).update(data).digest('hex')
+    return `sha1=${crypto.createHmac('sha1', options.secret).update(data).digest('hex')}`
   }
 
   function verify (signature, data) {
@@ -56,54 +60,60 @@ function create (initOptions) {
   }
 
   function handler (req, res, callback) {
-    var events
+    let events
 
     options = findHandler(req.url, initOptions)
 
-    if (typeof options.events == 'string' && options.events != '*')
-      events = [ options.events ]
-  
-    else if (Array.isArray(options.events) && options.events.indexOf('*') == -1)
+    if (typeof options.events === 'string' && options.events !== '*') {
+      events = [options.events]
+    } else if (Array.isArray(options.events) && options.events.indexOf('*') === -1) {
       events = options.events
-      
-    if (req.url.split('?').shift() !== options.path || req.method !== 'POST')
+    }
+
+    if (req.url !== options.path || req.method !== 'POST') {
       return callback()
+    }
 
     function hasError (msg) {
       res.writeHead(400, { 'content-type': 'application/json' })
       res.end(JSON.stringify({ error: msg }))
 
-      var err = new Error(msg)
+      const err = new Error(msg)
 
       handler.emit('error', err, req)
       callback(err)
     }
 
-    var sig   = req.headers['x-hub-signature']
-      , event = req.headers['x-github-event']
-      , id    = req.headers['x-github-delivery']
+    const sig = req.headers['x-hub-signature']
+    const event = req.headers['x-github-event']
+    const id = req.headers['x-github-delivery']
 
-    if (!sig)
+    if (!sig) {
       return hasError('No X-Hub-Signature found on request')
+    }
 
-    if (!event)
+    if (!event) {
       return hasError('No X-Github-Event found on request')
+    }
 
-    if (!id)
+    if (!id) {
       return hasError('No X-Github-Delivery found on request')
+    }
 
-    if (events && events.indexOf(event) == -1)
+    if (events && events.indexOf(event) === -1) {
       return hasError('X-Github-Event is not acceptable')
+    }
 
-    req.pipe(bl(function (err, data) {
+    req.pipe(bl((err, data) => {
       if (err) {
         return hasError(err.message)
       }
 
-      var obj
+      let obj
 
-      if (!verify(sig, data))
+      if (!verify(sig, data)) {
         return hasError('X-Hub-Signature does not match blob signature')
+      }
 
       try {
         obj = JSON.parse(data.toString())
@@ -114,14 +124,14 @@ function create (initOptions) {
       res.writeHead(200, { 'content-type': 'application/json' })
       res.end('{"ok":true}')
 
-      var emitData = {
-          event   : event
-        , id      : id
-        , payload : obj
-        , protocol: req.protocol
-        , host    : req.headers['host']
-        , url     : req.url
-        , path    : options.path
+      const emitData = {
+        event: event,
+        id: id,
+        payload: obj,
+        protocol: req.protocol,
+        host: req.headers.host,
+        url: req.url,
+        path: options.path
       }
 
       handler.emit(event, emitData)
@@ -129,6 +139,5 @@ function create (initOptions) {
     }))
   }
 }
-
 
 module.exports = create

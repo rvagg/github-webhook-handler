@@ -5,7 +5,8 @@
   "main": "github-webhook-handler.js",
   "types": "github-webhook-handler.d.ts",
   "scripts": {
-    "test": "node test.js"
+    "lint": "standard *.js",
+    "test": "npm run lint && node test.js"
   },
   "keywords": [
     "github",
@@ -18,12 +19,13 @@
   },
   "license": "MIT",
   "dependencies": {
-    "bl": "~1.1.2"
+    "bl": "~4.0.0"
   },
   "devDependencies": {
     "@types/node": "*",
-    "run-series": "~1.1.4",
-    "tape": "~4.6.0",
-    "through2": "~2.0.1"
+    "run-series": "~1.1.8",
+    "standard": "~14.3.1",
+    "tape": "~4.11.0",
+    "through2": "~3.0.1"
   }
 }
