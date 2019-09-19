@@ -56,7 +56,12 @@ function create (initOptions) {
   }
 
   function verify (signature, data) {
-    return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(sign(data)))
+    const sig = Buffer.from(signature)
+    const signed = Buffer.from(sign(data))
+    if (sig.length !== signed.length) {
+      return false
+    }
+    return crypto.timingSafeEqual(sig, signed)
   }
 
   function handler (req, res, callback) {
