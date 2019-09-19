@@ -1,7 +1,8 @@
-# github-webhook-handler [![Build Status](https://travis-ci.org/rvagg/github-webhook-handler.svg?branch=master)](https://travis-ci.org/rvagg/github-webhook-handler)
+# github-webhook-handler
 
-[![NPM](https://nodei.co/npm/github-webhook-handler.png?downloads=true&downloadRank=true)](https://nodei.co/npm/github-webhook-handler/)
-[![NPM](https://nodei.co/npm-dl/github-webhook-handler.png?months=6&height=3)](https://nodei.co/npm/github-webhook-handler/)
+[![Build Status](https://travis-ci.org/rvagg/github-webhook-handler.svg?branch=master)](https://travis-ci.org/rvagg/github-webhook-handler)
+
+[![NPM](https://nodei.co/npm/github-webhook-handler.svg)](https://nodei.co/npm/github-webhook-handler/)
 
 GitHub allows you to register **[Webhooks](https://developer.github.com/webhooks/)** for your repositories. Each time an event occurs on your repository, whether it be pushing code, filling issues or creating pull requests, the webhook address you register can be configured to be pinged with details.
 
@@ -75,4 +76,4 @@ Additionally, there is a special `'*'` even you can listen to in order to receiv
 
 ## License
 
-**github-webhook-handler** is Copyright (c) 2014 Rod Vagg [@rvagg](https://twitter.com/rvagg) and licensed under the MIT License. All rights not explicitly granted in the MIT License are reserved. See the included [LICENSE.md](./LICENSE.md) file for more details.
+**github-webhook-handler** is Copyright (c) 2014 Rod Vagg and licensed under the MIT License. All rights not explicitly granted in the MIT License are reserved. See the included [LICENSE.md](./LICENSE.md) file for more details.
