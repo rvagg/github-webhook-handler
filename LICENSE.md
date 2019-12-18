@@ -1,3 +1,4 @@
+LICENSE.md
 The MIT License (MIT)
 =====================
 
