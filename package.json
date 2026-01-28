@@ -4,14 +4,21 @@
   "description": "Web handler / middleware for processing GitHub Webhooks",
   "type": "module",
   "main": "github-webhook-handler.js",
-  "exports": "./github-webhook-handler.js",
-  "types": "github-webhook-handler.d.ts",
+  "exports": {
+    ".": {
+      "import": "./github-webhook-handler.js",
+      "types": "./types/github-webhook-handler.d.ts"
+    }
+  },
+  "types": "types/github-webhook-handler.d.ts",
   "engines": {
     "node": ">=20"
   },
   "scripts": {
     "lint": "standard",
-    "build": "true",
+    "build": "npm run build:types",
+    "build:types": "tsc --build",
+    "prepublishOnly": "npm run build",
     "test:unit": "node --test test.js",
     "test": "npm run lint && npm run test:unit"
   },
@@ -35,9 +42,11 @@
     "@semantic-release/github": "^12.0.2",
     "@semantic-release/npm": "^13.1.3",
     "@semantic-release/release-notes-generator": "^14.1.0",
+    "@types/node": "^25.0.10",
     "conventional-changelog-conventionalcommits": "^9.1.0",
     "semantic-release": "^25.0.2",
-    "standard": "^17.1.2"
+    "standard": "^17.1.2",
+    "typescript": "^5.9.3"
   },
   "release": {
     "branches": [
