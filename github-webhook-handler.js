@@ -1,6 +1,6 @@
-const EventEmitter = require('events')
-const crypto = require('crypto')
-const bl = require('bl')
+import { EventEmitter } from 'node:events'
+import crypto from 'node:crypto'
+import bl from 'bl'
 
 function findHandler (url, arr) {
   if (!Array.isArray(arr)) {
@@ -23,17 +23,16 @@ function checkType (options) {
   }
 
   if (typeof options.path !== 'string') {
-    throw new TypeError('must provide a \'path\' option')
+    throw new TypeError("must provide a 'path' option")
   }
 
   if (typeof options.secret !== 'string') {
-    throw new TypeError('must provide a \'secret\' option')
+    throw new TypeError("must provide a 'secret' option")
   }
 }
 
 function create (initOptions) {
   let options
-  // validate type of options
   if (Array.isArray(initOptions)) {
     for (let i = 0; i < initOptions.length; i++) {
       checkType(initOptions[i])
@@ -42,7 +41,6 @@ function create (initOptions) {
     checkType(initOptions)
   }
 
-  // make it an EventEmitter
   Object.setPrototypeOf(handler, EventEmitter.prototype)
   EventEmitter.call(handler)
 
@@ -130,8 +128,8 @@ function create (initOptions) {
       res.end('{"ok":true}')
 
       const emitData = {
-        event: event,
-        id: id,
+        event,
+        id,
         payload: obj,
         protocol: req.protocol,
         host: req.headers.host,
@@ -145,4 +143,4 @@ function create (initOptions) {
   }
 }
 
-module.exports = create
+export default create
