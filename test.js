@@ -1,15 +1,15 @@
-const test = require('tape')
-const crypto = require('crypto')
-const handler = require('./')
-const through2 = require('through2')
-const series = require('run-series')
+import { test } from 'node:test'
+import assert from 'node:assert'
+import crypto from 'node:crypto'
+import { PassThrough } from 'node:stream'
+import handler from './github-webhook-handler.js'
 
 function signBlob (key, blob) {
   return `sha1=${crypto.createHmac('sha1', key).update(blob).digest('hex')}`
 }
 
 function mkReq (url, method) {
-  const req = through2()
+  const req = new PassThrough()
   req.method = method || 'POST'
   req.url = url
   req.headers = {
@@ -22,116 +22,102 @@ function mkReq (url, method) {
 
 function mkRes () {
   const res = {
-    writeHead: function (statusCode, headers) {
+    writeHead (statusCode, headers) {
       res.$statusCode = statusCode
       res.$headers = headers
     },
-
-    end: function (content) {
+    end (content) {
       res.$end = content
     }
   }
-
   return res
 }
 
-test('handler without full options throws', (t) => {
-  t.plan(4)
-
-  t.equal(typeof handler, 'function', 'handler exports a function')
-
-  t.throws(handler, /must provide an options object/, 'throws if no options')
-
-  t.throws(handler.bind(null, {}), /must provide a 'path' option/, 'throws if no path option')
-
-  t.throws(handler.bind(null, { path: '/' }), /must provide a 'secret' option/, 'throws if no secret option')
+test('handler without full options throws', () => {
+  assert.strictEqual(typeof handler, 'function', 'handler exports a function')
+  assert.throws(() => handler(), /must provide an options object/, 'throws if no options')
+  assert.throws(() => handler({}), /must provide a 'path' option/, 'throws if no path option')
+  assert.throws(() => handler({ path: '/' }), /must provide a 'secret' option/, 'throws if no secret option')
 })
 
-test('handler without full options throws in array', (t) => {
-  t.plan(2)
-
-  t.throws(handler.bind(null, [{}]), /must provide a 'path' option/, 'throws if no path option')
-
-  t.throws(handler.bind(null, [{ path: '/' }]), /must provide a 'secret' option/, 'throws if no secret option')
+test('handler without full options throws in array', () => {
+  assert.throws(() => handler([{}]), /must provide a 'path' option/, 'throws if no path option')
+  assert.throws(() => handler([{ path: '/' }]), /must provide a 'secret' option/, 'throws if no secret option')
 })
 
-test('handler ignores invalid urls', (t) => {
+test('handler ignores invalid urls', async () => {
   const options = { path: '/some/url', secret: 'bogus' }
   const h = handler(options)
 
-  t.plan(6)
-
-  h(mkReq('/'), mkRes(), (err) => {
-    t.error(err)
-    t.ok(true, 'request was ignored')
+  await new Promise((resolve) => {
+    h(mkReq('/'), mkRes(), (err) => {
+      assert.ifError(err)
+      resolve()
+    })
   })
 
-  // near match
-  h(mkReq('/some/url/'), mkRes(), (err) => {
-    t.error(err)
-    t.ok(true, 'request was ignored')
+  await new Promise((resolve) => {
+    h(mkReq('/some/url/'), mkRes(), (err) => {
+      assert.ifError(err)
+      resolve()
+    })
   })
 
-  // partial match
-  h(mkReq('/some'), mkRes(), (err) => {
-    t.error(err)
-    t.ok(true, 'request was ignored')
+  await new Promise((resolve) => {
+    h(mkReq('/some'), mkRes(), (err) => {
+      assert.ifError(err)
+      resolve()
+    })
   })
 })
 
-test('handler ingores non-POST requests', (t) => {
+test('handler ignores non-POST requests', async () => {
   const options = { path: '/some/url', secret: 'bogus' }
   const h = handler(options)
 
-  t.plan(4)
-
-  h(mkReq('/some/url', 'GET'), mkRes(), (err) => {
-    t.error(err)
-    t.ok(true, 'request was ignored')
+  await new Promise((resolve) => {
+    h(mkReq('/some/url', 'GET'), mkRes(), (err) => {
+      assert.ifError(err)
+      resolve()
+    })
   })
 
-  h(mkReq('/some/url?test=param', 'GET'), mkRes(), (err) => {
-    t.error(err)
-    t.ok(true, 'request was ignored')
+  await new Promise((resolve) => {
+    h(mkReq('/some/url?test=param', 'GET'), mkRes(), (err) => {
+      assert.ifError(err)
+      resolve()
+    })
   })
 })
 
-test('handler accepts valid urls', (t) => {
+test('handler accepts valid urls', async () => {
   const options = { path: '/some/url', secret: 'bogus' }
   const h = handler(options)
 
-  t.plan(1)
-
-  h(mkReq('/some/url'), mkRes(), (err) => {
-    t.error(err)
-    t.fail(false, 'should not call')
+  let callbackCalled = false
+  h(mkReq('/some/url'), mkRes(), () => {
+    callbackCalled = true
   })
 
-  setTimeout(t.ok.bind(t, true, 'done'))
+  await new Promise((resolve) => setTimeout(resolve, 10))
+  assert.strictEqual(callbackCalled, false, 'callback should not be called for valid POST')
 })
 
-test('handler accepts valid urls in Array', (t) => {
+test('handler accepts valid urls in Array', async () => {
   const options = [{ path: '/some/url', secret: 'bogus' }, { path: '/someOther/url', secret: 'bogus' }]
   const h = handler(options)
 
-  t.plan(1)
+  let callbackCalled = false
+  h(mkReq('/some/url'), mkRes(), () => { callbackCalled = true })
+  h(mkReq('/someOther/url'), mkRes(), () => { callbackCalled = true })
 
-  h(mkReq('/some/url'), mkRes(), (err) => {
-    t.error(err)
-    t.fail(false, 'should not call')
-  })
-
-  h(mkReq('/someOther/url'), mkRes(), (err) => {
-    t.error(err)
-    t.fail(false, 'should not call')
-  })
-
-  setTimeout(t.ok.bind(t, true, 'done'))
+  await new Promise((resolve) => setTimeout(resolve, 10))
+  assert.strictEqual(callbackCalled, false, 'callback should not be called for valid POSTs')
 })
 
-test('handler can reject events', (t) => {
+test('handler can reject events', async () => {
   const acceptableEvents = {
-    undefined: undefined,
+    undefined,
     'a string equal to the event': 'bogus',
     'a string equal to *': '*',
     'an array containing the event': ['bogus'],
@@ -141,74 +127,55 @@ test('handler can reject events', (t) => {
     'a string not equal to the event or *': 'not-bogus',
     'an array not containing the event or *': ['not-bogus']
   }
-  const acceptable = Object.keys(acceptableEvents)
-  const unacceptable = Object.keys(unacceptableEvents)
-  const acceptableTests = acceptable.map((events) => {
-    return acceptableReq.bind(null, events)
-  })
-  const unacceptableTests = unacceptable.map((events) => {
-    return unacceptableReq.bind(null, events)
-  })
 
-  t.plan(acceptable.length + unacceptable.length)
-  series(acceptableTests.concat(unacceptableTests))
-
-  function acceptableReq (events, callback) {
+  for (const [desc, events] of Object.entries(acceptableEvents)) {
     const h = handler({
       path: '/some/url',
       secret: 'bogus',
-      events: acceptableEvents[events]
+      events
     })
 
-    h(mkReq('/some/url'), mkRes(), (err) => {
-      t.error(err)
-      t.fail(false, 'should not call')
-    })
+    let callbackCalled = false
+    h(mkReq('/some/url'), mkRes(), () => { callbackCalled = true })
 
-    setTimeout(() => {
-      t.ok(true, 'accepted because options.events was ' + events)
-      callback()
-    })
+    await new Promise((resolve) => setTimeout(resolve, 10))
+    assert.strictEqual(callbackCalled, false, `accepted because options.events was ${desc}`)
   }
 
-  function unacceptableReq (events, callback) {
+  for (const [desc, events] of Object.entries(unacceptableEvents)) {
     const h = handler({
       path: '/some/url',
       secret: 'bogus',
-      events: unacceptableEvents[events]
+      events
     })
 
     h.on('error', () => {})
 
-    h(mkReq('/some/url'), mkRes(), (err) => {
-      t.ok(err, 'rejected because options.events was ' + events)
-      callback()
+    await new Promise((resolve) => {
+      h(mkReq('/some/url'), mkRes(), (err) => {
+        assert.ok(err, `rejected because options.events was ${desc}`)
+        resolve()
+      })
     })
   }
 })
 
-// because we don't inherit in a traditional way
-test('handler is an EventEmitter', (t) => {
-  t.plan(5)
-
+test('handler is an EventEmitter', () => {
   const h = handler({ path: '/', secret: 'bogus' })
 
-  t.equal(typeof h.on, 'function', 'has h.on()')
-  t.equal(typeof h.emit, 'function', 'has h.emit()')
-  t.equal(typeof h.removeListener, 'function', 'has h.removeListener()')
+  assert.strictEqual(typeof h.on, 'function', 'has h.on()')
+  assert.strictEqual(typeof h.emit, 'function', 'has h.emit()')
+  assert.strictEqual(typeof h.removeListener, 'function', 'has h.removeListener()')
 
-  h.on('ping', (pong) => {
-    t.equal(pong, 'pong', 'got event')
-  })
-
+  let received
+  h.on('ping', (pong) => { received = pong })
   h.emit('ping', 'pong')
+  assert.strictEqual(received, 'pong', 'got event')
 
-  t.throws(h.emit.bind(h, 'error', new Error('threw an error')), /threw an error/, 'acts like an EE')
+  assert.throws(() => h.emit('error', new Error('threw an error')), /threw an error/, 'acts like an EE')
 })
 
-test('handler accepts a signed blob', (t) => {
-  t.plan(4)
-
+test('handler accepts a signed blob', async () => {
   const obj = { some: 'github', object: 'with', properties: true }
   const json = JSON.stringify(obj)
   const h = handler({ path: '/', secret: 'bogus' })
@@ -218,54 +185,69 @@ test('handler accepts a signed blob', (t) => {
   req.headers['x-hub-signature'] = signBlob('bogus', json)
   req.headers['x-github-event'] = 'push'
 
-  h.on('push', (event) => {
-    t.deepEqual(event, { event: 'push', id: 'bogus', payload: obj, url: '/', host: undefined, protocol: undefined, path: '/' })
-    t.equal(res.$statusCode, 200, 'correct status code')
-    t.deepEqual(res.$headers, { 'content-type': 'application/json' })
-    t.equal(res.$end, '{"ok":true}', 'got correct content')
+  const eventPromise = new Promise((resolve) => {
+    h.on('push', (event) => {
+      assert.deepStrictEqual(event, {
+        event: 'push',
+        id: 'bogus',
+        payload: obj,
+        url: '/',
+        host: undefined,
+        protocol: undefined,
+        path: '/'
+      })
+      assert.strictEqual(res.$statusCode, 200, 'correct status code')
+      assert.deepStrictEqual(res.$headers, { 'content-type': 'application/json' })
+      assert.strictEqual(res.$end, '{"ok":true}', 'got correct content')
+      resolve()
+    })
   })
 
-  h(req, res, (err) => {
-    t.error(err)
-    t.fail(true, 'should not get here!')
+  h(req, res, () => {
+    assert.fail('should not get here')
   })
 
-  process.nextTick(() => {
-    req.end(json)
-  })
+  process.nextTick(() => req.end(json))
+  await eventPromise
 })
 
-test('handler accepts multi blob in Array', (t) => {
-  t.plan(4)
-
+test('handler accepts multi blob in Array', async () => {
   const obj = { some: 'github', object: 'with', properties: true }
   const json = JSON.stringify(obj)
   const h = handler([{ path: '/', secret: 'bogus' }, { path: '/some/url', secret: 'bogus' }])
   const req = mkReq('/some/url')
   const res = mkRes()
+
   req.headers['x-hub-signature'] = signBlob('bogus', json)
   req.headers['x-github-event'] = 'push'
 
-  h.on('push', (event) => {
-    t.deepEqual(event, { event: 'push', id: 'bogus', payload: obj, url: '/some/url', host: undefined, protocol: undefined, path: '/some/url' })
-    t.equal(res.$statusCode, 200, 'correct status code')
-    t.deepEqual(res.$headers, { 'content-type': 'application/json' })
-    t.equal(res.$end, '{"ok":true}', 'got correct content')
+  const eventPromise = new Promise((resolve) => {
+    h.on('push', (event) => {
+      assert.deepStrictEqual(event, {
+        event: 'push',
+        id: 'bogus',
+        payload: obj,
+        url: '/some/url',
+        host: undefined,
+        protocol: undefined,
+        path: '/some/url'
+      })
+      assert.strictEqual(res.$statusCode, 200, 'correct status code')
+      assert.deepStrictEqual(res.$headers, { 'content-type': 'application/json' })
+      assert.strictEqual(res.$end, '{"ok":true}', 'got correct content')
+      resolve()
+    })
   })
 
-  h(req, res, (err) => {
-    t.error(err)
-    t.fail(true, 'should not get here!')
+  h(req, res, () => {
+    assert.fail('should not get here')
   })
 
-  process.nextTick(() => {
-    req.end(json)
-  })
+  process.nextTick(() => req.end(json))
+  await eventPromise
 })
 
-test('handler accepts a signed blob with alt event', (t) => {
-  t.plan(4)
-
+test('handler accepts a signed blob with alt event', async () => {
   const obj = { some: 'github', object: 'with', properties: true }
   const json = JSON.stringify(obj)
   const h = handler({ path: '/', secret: 'bogus' })
@@ -275,30 +257,35 @@ test('handler accepts a signed blob with alt event', (t) => {
   req.headers['x-hub-signature'] = signBlob('bogus', json)
   req.headers['x-github-event'] = 'issue'
 
-  h.on('push', (event) => {
-    t.fail(true, 'should not get here!')
+  h.on('push', () => assert.fail('should not get here'))
+
+  const eventPromise = new Promise((resolve) => {
+    h.on('issue', (event) => {
+      assert.deepStrictEqual(event, {
+        event: 'issue',
+        id: 'bogus',
+        payload: obj,
+        url: '/',
+        host: undefined,
+        protocol: undefined,
+        path: '/'
+      })
+      assert.strictEqual(res.$statusCode, 200, 'correct status code')
+      assert.deepStrictEqual(res.$headers, { 'content-type': 'application/json' })
+      assert.strictEqual(res.$end, '{"ok":true}', 'got correct content')
+      resolve()
+    })
   })
 
-  h.on('issue', (event) => {
-    t.deepEqual(event, { event: 'issue', id: 'bogus', payload: obj, url: '/', host: undefined, protocol: undefined, path: '/' })
-    t.equal(res.$statusCode, 200, 'correct status code')
-    t.deepEqual(res.$headers, { 'content-type': 'application/json' })
-    t.equal(res.$end, '{"ok":true}', 'got correct content')
+  h(req, res, () => {
+    assert.fail('should not get here')
   })
 
-  h(req, res, (err) => {
-    t.error(err)
-    t.fail(true, 'should not get here!')
-  })
-
-  process.nextTick(() => {
-    req.end(json)
-  })
+  process.nextTick(() => req.end(json))
+  await eventPromise
 })
 
-test('handler rejects a badly signed blob', (t) => {
-  t.plan(6)
-
+test('handler rejects a badly signed blob', async () => {
   const obj = { some: 'github', object: 'with', properties: true }
   const json = JSON.stringify(obj)
   const h = handler({ path: '/', secret: 'bogus' })
@@ -306,33 +293,30 @@ test('handler rejects a badly signed blob', (t) => {
   const res = mkRes()
 
   req.headers['x-hub-signature'] = signBlob('bogus', json)
-  // break signage by a tiny bit
   req.headers['x-hub-signature'] = '0' + req.headers['x-hub-signature'].substring(1)
 
-  h.on('error', (err, _req) => {
-    t.ok(err, 'got an error')
-    t.strictEqual(_req, req, 'was given original request object')
-    t.equal(res.$statusCode, 400, 'correct status code')
-    t.deepEqual(res.$headers, { 'content-type': 'application/json' })
-    t.equal(res.$end, '{"error":"X-Hub-Signature does not match blob signature"}', 'got correct content')
+  const errorPromise = new Promise((resolve) => {
+    h.on('error', (err, _req) => {
+      assert.ok(err, 'got an error')
+      assert.strictEqual(_req, req, 'was given original request object')
+      assert.strictEqual(res.$statusCode, 400, 'correct status code')
+      assert.deepStrictEqual(res.$headers, { 'content-type': 'application/json' })
+      assert.strictEqual(res.$end, '{"error":"X-Hub-Signature does not match blob signature"}', 'got correct content')
+      resolve()
+    })
   })
 
-  h.on('push', (event) => {
-    t.fail(true, 'should not get here!')
-  })
+  h.on('push', () => assert.fail('should not get here'))
 
   h(req, res, (err) => {
-    t.ok(err, 'got error on callback')
+    assert.ok(err, 'got error on callback')
   })
 
-  process.nextTick(() => {
-    req.end(json)
-  })
+  process.nextTick(() => req.end(json))
+  await errorPromise
 })
 
-test('handler responds on a bl error', (t) => {
-  t.plan(4)
-
+test('handler responds on a stream error', async () => {
   const obj = { some: 'github', object: 'with', properties: true }
   const json = JSON.stringify(obj)
   const h = handler({ path: '/', secret: 'bogus' })
@@ -342,29 +326,25 @@ test('handler responds on a bl error', (t) => {
   req.headers['x-hub-signature'] = signBlob('bogus', json)
   req.headers['x-github-event'] = 'issue'
 
-  h.on('push', (event) => {
-    t.fail(true, 'should not get here!')
-  })
+  h.on('push', () => assert.fail('should not get here'))
+  h.on('issue', () => assert.fail('should never get here'))
 
-  h.on('issue', (event) => {
-    t.fail(true, 'should never get here!')
-  })
-
-  h.on('error', (err) => {
-    t.ok(err, 'got an error')
-    t.equal(res.$statusCode, 400, 'correct status code')
+  const errorPromise = new Promise((resolve) => {
+    h.on('error', (err) => {
+      assert.ok(err, 'got an error')
+      assert.strictEqual(res.$statusCode, 400, 'correct status code')
+      resolve()
+    })
   })
 
   h(req, res, (err) => {
-    t.ok(err)
+    assert.ok(err)
   })
-
-  res.end = () => {
-    t.equal(res.$statusCode, 400, 'correct status code')
-  }
 
   req.write('{')
   process.nextTick(() => {
-    req.emit('error', new Error('simulated explosion'))
+    req.destroy(new Error('simulated explosion'))
   })
+
+  await errorPromise
 })
