@@ -2,6 +2,29 @@ import { EventEmitter } from 'node:events'
 import crypto from 'node:crypto'
 import bl from 'bl'
 
+/**
+ * @typedef {Object} CreateHandlerOptions
+ * @property {string} path
+ * @property {string} secret
+ * @property {string | string[]} [events]
+ */
+
+/**
+ * @typedef {Object} WebhookEvent
+ * @property {string} event - The event type (e.g. 'push', 'issues')
+ * @property {string} id - The delivery ID from X-Github-Delivery header
+ * @property {any} payload - The parsed JSON payload
+ * @property {string} [protocol] - The request protocol
+ * @property {string} [host] - The request host header
+ * @property {string} url - The request URL
+ * @property {string} path - The matched handler path
+ */
+
+/**
+ * @param {string} url
+ * @param {CreateHandlerOptions | CreateHandlerOptions[]} arr
+ * @returns {CreateHandlerOptions}
+ */
 function findHandler (url, arr) {
   if (!Array.isArray(arr)) {
     return arr
@@ -17,6 +40,9 @@ function findHandler (url, arr) {
   return ret
 }
 
+/**
+ * @param {CreateHandlerOptions} options
+ */
 function checkType (options) {
   if (typeof options !== 'object') {
     throw new TypeError('must provide an options object')
@@ -31,7 +57,12 @@ function checkType (options) {
   }
 }
 
+/**
+ * @param {CreateHandlerOptions | CreateHandlerOptions[]} initOptions
+ * @returns {EventEmitter & {(req: import('node:http').IncomingMessage, res: import('node:http').ServerResponse, callback: (err?: Error) => void): void, sign(data: string | Buffer): string, verify(signature: string, data: string | Buffer): boolean}}
+ */
 function create (initOptions) {
+  /** @type {CreateHandlerOptions} */
   let options
   if (Array.isArray(initOptions)) {
     for (let i = 0; i < initOptions.length; i++) {
@@ -41,18 +72,30 @@ function create (initOptions) {
     checkType(initOptions)
   }
 
+  // @ts-ignore - handler is a callable EventEmitter via setPrototypeOf
   Object.setPrototypeOf(handler, EventEmitter.prototype)
+  // @ts-ignore
   EventEmitter.call(handler)
 
   handler.sign = sign
   handler.verify = verify
 
+  // @ts-ignore
   return handler
 
+  /**
+   * @param {string | Buffer} data
+   * @returns {string}
+   */
   function sign (data) {
     return `sha1=${crypto.createHmac('sha1', options.secret).update(data).digest('hex')}`
   }
 
+  /**
+   * @param {string} signature
+   * @param {string | Buffer} data
+   * @returns {boolean}
+   */
   function verify (signature, data) {
     const sig = Buffer.from(signature)
     const signed = Buffer.from(sign(data))
@@ -62,10 +105,16 @@ function create (initOptions) {
     return crypto.timingSafeEqual(sig, signed)
   }
 
+  /**
+   * @param {import('node:http').IncomingMessage} req
+   * @param {import('node:http').ServerResponse} res
+   * @param {(err?: Error) => void} callback
+   */
   function handler (req, res, callback) {
+    /** @type {string[] | undefined} */
     let events
 
-    options = findHandler(req.url, initOptions)
+    options = findHandler(/** @type {string} */ (req.url), initOptions)
 
     if (typeof options.events === 'string' && options.events !== '*') {
       events = [options.events]
@@ -77,12 +126,16 @@ function create (initOptions) {
       return callback()
     }
 
+    /**
+     * @param {string} msg
+     */
     function hasError (msg) {
       res.writeHead(400, { 'content-type': 'application/json' })
       res.end(JSON.stringify({ error: msg }))
 
       const err = new Error(msg)
 
+      // @ts-ignore - handler has EventEmitter prototype
       handler.emit('error', err, req)
       callback(err)
     }
@@ -103,7 +156,7 @@ function create (initOptions) {
       return hasError('No X-Github-Delivery found on request')
     }
 
-    if (events && events.indexOf(event) === -1) {
+    if (events && events.indexOf(/** @type {string} */ (event)) === -1) {
       return hasError('X-Github-Event is not acceptable')
     }
 
@@ -114,14 +167,14 @@ function create (initOptions) {
 
       let obj
 
-      if (!verify(sig, data)) {
+      if (!verify(/** @type {string} */ (sig), data)) {
         return hasError('X-Hub-Signature does not match blob signature')
       }
 
       try {
         obj = JSON.parse(data.toString())
       } catch (e) {
-        return hasError(e)
+        return hasError(/** @type {Error} */ (e).message)
       }
 
       res.writeHead(200, { 'content-type': 'application/json' })
@@ -131,13 +184,15 @@ function create (initOptions) {
         event,
         id,
         payload: obj,
-        protocol: req.protocol,
+        protocol: /** @type {any} */ (req).protocol,
         host: req.headers.host,
         url: req.url,
         path: options.path
       }
 
+      // @ts-ignore - handler has EventEmitter prototype
       handler.emit(event, emitData)
+      // @ts-ignore - handler has EventEmitter prototype
       handler.emit('*', emitData)
     }))
   }
