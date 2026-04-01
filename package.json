@@ -46,7 +46,7 @@
     "conventional-changelog-conventionalcommits": "^9.1.0",
     "semantic-release": "^25.0.2",
     "standard": "^17.1.2",
-    "typescript": "^5.9.3"
+    "typescript": "^6.0.2"
   },
   "release": {
     "branches": [
