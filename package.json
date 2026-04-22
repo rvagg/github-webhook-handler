@@ -33,7 +33,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "bl": "^6.1.6"
+    "bl": "^7.0.0"
   },
   "devDependencies": {
     "@semantic-release/changelog": "^6.0.3",
