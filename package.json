@@ -1,6 +1,6 @@
 {
   "name": "github-webhook-handler",
-  "version": "2.1.2",
+  "version": "2.1.3",
   "description": "Web handler / middleware for processing GitHub Webhooks",
   "type": "module",
   "main": "github-webhook-handler.js",

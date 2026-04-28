@@ -1,3 +1,13 @@
+## [2.1.3](https://github.com/rvagg/github-webhook-handler/compare/v2.1.2...v2.1.3) (2026-04-28)
+
+### Bug Fixes
+
+* make ready for bl@7 ([089bec6](https://github.com/rvagg/github-webhook-handler/commit/089bec66f92c20b2b46ea7546afc552b763b3f50))
+
+### Trivial Changes
+
+* **deps:** bump bl from 6.1.6 to 7.0.0 ([226cdc3](https://github.com/rvagg/github-webhook-handler/commit/226cdc3ffcbecfc16be781bf0510da3bfffc5cbc))
+
 ## [2.1.2](https://github.com/rvagg/github-webhook-handler/compare/v2.1.1...v2.1.2) (2026-04-28)
 
 ### Trivial Changes
