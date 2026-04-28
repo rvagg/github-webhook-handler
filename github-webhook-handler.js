@@ -1,6 +1,6 @@
 import { EventEmitter } from 'node:events'
 import crypto from 'node:crypto'
-import bl from 'bl'
+import { BufferListStream } from 'bl'
 
 /**
  * @typedef {Object} CreateHandlerOptions
@@ -160,19 +160,20 @@ function create (initOptions) {
       return hasError('X-Github-Event is not acceptable')
     }
 
-    req.pipe(bl((err, data) => {
+    req.pipe(new BufferListStream((err, data) => {
       if (err) {
         return hasError(err.message)
       }
 
       let obj
+      const buf = /** @type {Buffer} */ (data)
 
-      if (!verify(/** @type {string} */ (sig), data)) {
+      if (!verify(/** @type {string} */ (sig), buf)) {
         return hasError('X-Hub-Signature does not match blob signature')
       }
 
       try {
-        obj = JSON.parse(data.toString())
+        obj = JSON.parse(buf.toString())
       } catch (e) {
         return hasError(/** @type {Error} */ (e).message)
       }

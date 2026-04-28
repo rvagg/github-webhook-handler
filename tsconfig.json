@@ -25,7 +25,8 @@
     "skipLibCheck": true,
     "stripInternal": true,
     "resolveJsonModule": true,
-    "emitDeclarationOnly": true
+    "emitDeclarationOnly": true,
+    "types": ["node"]
   },
   "include": ["github-webhook-handler.js"],
   "exclude": ["node_modules"],
