@@ -1,3 +1,9 @@
+## [2.1.4](https://github.com/rvagg/github-webhook-handler/compare/v2.1.3...v2.1.4) (2026-04-29)
+
+### Trivial Changes
+
+* **deps:** bump actions/setup-node from 6.3.0 to 6.4.0 ([#63](https://github.com/rvagg/github-webhook-handler/issues/63)) ([0465bb4](https://github.com/rvagg/github-webhook-handler/commit/0465bb466d4c7abb6f225368c69c44329a4da5fa))
+
 ## [2.1.3](https://github.com/rvagg/github-webhook-handler/compare/v2.1.2...v2.1.3) (2026-04-28)
 
 ### Bug Fixes
