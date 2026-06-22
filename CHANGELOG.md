@@ -1,3 +1,9 @@
+## [2.1.6](https://github.com/rvagg/github-webhook-handler/compare/v2.1.5...v2.1.6) (2026-06-22)
+
+### Trivial Changes
+
+* **deps:** bump actions/checkout from 6.0.2 to 6.0.3 ([#65](https://github.com/rvagg/github-webhook-handler/issues/65)) ([fb59072](https://github.com/rvagg/github-webhook-handler/commit/fb59072b89f1ed07111ec172c7ac1bdaacc2217a))
+
 ## [2.1.5](https://github.com/rvagg/github-webhook-handler/compare/v2.1.4...v2.1.5) (2026-06-04)
 
 ### Trivial Changes
