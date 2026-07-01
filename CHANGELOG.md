@@ -1,3 +1,9 @@
+## [2.1.8](https://github.com/rvagg/github-webhook-handler/compare/v2.1.7...v2.1.8) (2026-07-01)
+
+### Trivial Changes
+
+* **deps-dev:** bump @types/node from 25.9.4 to 26.0.1 ([#67](https://github.com/rvagg/github-webhook-handler/issues/67)) ([f5a6740](https://github.com/rvagg/github-webhook-handler/commit/f5a67408931a59f16af08eb891dbb6be93df948b))
+
 ## [2.1.7](https://github.com/rvagg/github-webhook-handler/compare/v2.1.6...v2.1.7) (2026-06-25)
 
 ### Trivial Changes
