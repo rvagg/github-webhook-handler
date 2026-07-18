@@ -1,0 +1,19 @@
+# Posts the report artifact without checking out or running PR code with its
+# write token.
+name: depsound-post
+on:
+  workflow_run:
+    workflows: [depsound]
+    types: [completed]
+
+permissions:
+  pull-requests: write # upsert the sticky comment
+  checks: write        # set the neutral check
+  actions: read        # download the report artifact from the compute run
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.event == 'pull_request' }}
+    steps:
+      - uses: rvagg/depsound-action/post@2c5a7429aa5baaf8a79e12724a296282cd73e5ee # v0.2.1

@@ -8,13 +8,21 @@ updates:
       prefix: 'chore'
       include: 'scope'
     cooldown:
-      default-days: 5
+      default-days: 2
+    groups:
+      github-actions-minor-patch:
+        patterns: ['*']
+        update-types: ['minor', 'patch']
   - package-ecosystem: 'npm'
     directory: '/'
     schedule:
-      interval: 'weekly'
+      interval: 'monthly'
     commit-message:
       prefix: 'chore'
       include: 'scope'
     cooldown:
       default-days: 5
+    groups:
+      npm-minor-patch:
+        patterns: ['*']
+        update-types: ['minor', 'patch']
