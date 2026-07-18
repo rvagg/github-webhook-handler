@@ -1,0 +1,14 @@
+# Computes dependency evidence with a read-only token; depsound-post handles
+# the write side without exposing it to PR code.
+name: depsound
+on:
+  pull_request:
+
+permissions:
+  contents: read # checkout + diff the PR's manifests; no write, never posts
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: rvagg/depsound-action@2c5a7429aa5baaf8a79e12724a296282cd73e5ee # v0.2.1
