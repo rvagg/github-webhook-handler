@@ -1,14 +1,33 @@
-# Computes dependency evidence with a read-only token; depsound-post handles
-# the write side without exposing it to PR code.
+# Copy into .github/workflows/ of the repo you want reviewed. One workflow,
+# two jobs: review computes with a read-only token, post holds the write
+# scopes. The README explains the security model.
+#
+# pull_request_target runs the base branch's workflow definition and action
+# pin (a PR cannot modify what executes here), and its token can post the
+# comment, including on Dependabot and fork PRs whose own token is read-only.
+# It is safe here because no PR code is ever checked out or executed: the
+# review job reads the PR's manifest bytes as git objects, and depsound's
+# parsers treat all of it as hostile data.
 name: depsound
 on:
-  pull_request:
+  pull_request_target:
 
-permissions:
-  contents: read # checkout + diff the PR's manifests; no write, never posts
+permissions: {} # scopes are granted per job below
 
 jobs:
   review:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read # diff the PR's manifests; this job never sees a write token
     steps:
-      - uses: rvagg/depsound-action@2c5a7429aa5baaf8a79e12724a296282cd73e5ee # v0.2.1
+      - uses: rvagg/depsound-action@ca2026afd4d1fd614f990784867e09da10b6faa8 # v0.3.0
+  post:
+    needs: review
+    if: ${{ always() && needs.review.result != 'cancelled' }} # a failed review still posts its failure marker
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write # upsert the sticky comment
+      checks: write        # set the neutral check
+      actions: read        # download the report artifact
+    steps:
+      - uses: rvagg/depsound-action/post@ca2026afd4d1fd614f990784867e09da10b6faa8 # v0.3.0
