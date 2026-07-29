@@ -1,8 +1,8 @@
-export default create;
+import { EventEmitter } from 'node:events';
 export type CreateHandlerOptions = {
     path: string;
     secret: string;
-    events?: string | string[] | undefined;
+    events?: string | string[];
 };
 export type WebhookEvent = {
     /**
@@ -20,11 +20,11 @@ export type WebhookEvent = {
     /**
      * - The request protocol
      */
-    protocol?: string | undefined;
+    protocol?: string;
     /**
      * - The request host header
      */
-    host?: string | undefined;
+    host?: string;
     /**
      * - The request URL
      */
@@ -39,9 +39,9 @@ export type WebhookEvent = {
  * @returns {EventEmitter & {(req: import('node:http').IncomingMessage, res: import('node:http').ServerResponse, callback: (err?: Error) => void): void, sign(data: string | Buffer): string, verify(signature: string, data: string | Buffer): boolean}}
  */
 declare function create(initOptions: CreateHandlerOptions | CreateHandlerOptions[]): EventEmitter & {
-    (req: import("node:http").IncomingMessage, res: import("node:http").ServerResponse, callback: (err?: Error) => void): void;
+    (req: import('node:http').IncomingMessage, res: import('node:http').ServerResponse, callback: (err?: Error) => void): void;
     sign(data: string | Buffer): string;
     verify(signature: string, data: string | Buffer): boolean;
 };
-import { EventEmitter } from 'node:events';
+export default create;
 //# sourceMappingURL=github-webhook-handler.d.ts.map
