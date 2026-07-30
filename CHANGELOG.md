@@ -1,12 +1,34 @@
 ## [2.1.13](https://github.com/rvagg/github-webhook-handler/compare/v2.1.12...v2.1.13) (2026-07-29)
 
+### Trivial Changes
+
+* **deps-dev:** bump typescript from 6.0.3 to 7.0.2 ([22b4ee0](https://github.com/rvagg/github-webhook-handler/commit/22b4ee0c560f031ec6b5219f59fad29efd3bcc68))
+* **deps:** bump actions/checkout ([#73](https://github.com/rvagg/github-webhook-handler/issues/73)) ([48c8dd5](https://github.com/rvagg/github-webhook-handler/commit/48c8dd5c064236f4926b323dd5e9731ab7629b67))
+* fixes for ts@7 ([91f100d](https://github.com/rvagg/github-webhook-handler/commit/91f100d0cd0df89b1ada5eb87748a1a16d8c6bf1))
+
 ## [2.1.12](https://github.com/rvagg/github-webhook-handler/compare/v2.1.11...v2.1.12) (2026-07-21)
+
+### Trivial Changes
+
+* **ci:** update to single depsound-action workflow v0.3 ([#72](https://github.com/rvagg/github-webhook-handler/issues/72)) ([4dc97c2](https://github.com/rvagg/github-webhook-handler/commit/4dc97c28aa816b72544861c52e58284595b6ad51))
 
 ## [2.1.11](https://github.com/rvagg/github-webhook-handler/compare/v2.1.10...v2.1.11) (2026-07-18)
 
+### Trivial Changes
+
+* **deps:** bump actions/setup-node from 6.4.0 to 7.0.0 ([#71](https://github.com/rvagg/github-webhook-handler/issues/71)) ([8032e35](https://github.com/rvagg/github-webhook-handler/commit/8032e359732e58c7788e428423d2c75522076eb9))
+
 ## [2.1.10](https://github.com/rvagg/github-webhook-handler/compare/v2.1.9...v2.1.10) (2026-07-18)
 
+### Trivial Changes
+
+* **ci:** tweak dependabot, add depsound, use sha refs ([#70](https://github.com/rvagg/github-webhook-handler/issues/70)) ([3f9815a](https://github.com/rvagg/github-webhook-handler/commit/3f9815a96fcc26a3099de14bd381f22c47a87075))
+
 ## [2.1.9](https://github.com/rvagg/github-webhook-handler/compare/v2.1.8...v2.1.9) (2026-07-09)
+
+### Trivial Changes
+
+* **deps-dev:** bump conventional-changelog-conventionalcommits from 9.3.1 to 10.2.0 ([ac23c0b](https://github.com/rvagg/github-webhook-handler/commit/ac23c0b0d1710936adf949ae2756116a860c038c))
 
 ## [2.1.8](https://github.com/rvagg/github-webhook-handler/compare/v2.1.7...v2.1.8) (2026-07-01)
 
