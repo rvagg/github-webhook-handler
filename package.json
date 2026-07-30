@@ -43,7 +43,7 @@
     "@semantic-release/npm": "^13.1.5",
     "@semantic-release/release-notes-generator": "^14.1.0",
     "@types/node": "^26.0.1",
-    "conventional-changelog-conventionalcommits": "^10.2.0",
+    "conventional-changelog-conventionalcommits": "^9.3.1",
     "semantic-release": "^25.0.3",
     "standard": "^17.1.2",
     "typescript": "^7.0.2"
@@ -108,6 +108,30 @@
                 "section": "Bug Fixes"
               },
               {
+                "type": "perf",
+                "section": "Performance Improvements"
+              },
+              {
+                "type": "revert",
+                "section": "Reverts"
+              },
+              {
+                "type": "refactor",
+                "section": "Code Refactoring"
+              },
+              {
+                "type": "test",
+                "section": "Tests"
+              },
+              {
+                "type": "build",
+                "section": "Trivial Changes"
+              },
+              {
+                "type": "ci",
+                "section": "Trivial Changes"
+              },
+              {
                 "type": "chore",
                 "section": "Trivial Changes"
               },
@@ -116,8 +140,8 @@
                 "section": "Trivial Changes"
               },
               {
-                "type": "test",
-                "section": "Tests"
+                "type": "style",
+                "section": "Trivial Changes"
               }
             ]
           }
