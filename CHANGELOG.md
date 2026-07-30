@@ -1,3 +1,9 @@
+## [2.1.15](https://github.com/rvagg/github-webhook-handler/compare/v2.1.14...v2.1.15) (2026-07-30)
+
+### Trivial Changes
+
+* downgrade broken changelog maker, backfill entries ([#75](https://github.com/rvagg/github-webhook-handler/issues/75)) ([c31e3cb](https://github.com/rvagg/github-webhook-handler/commit/c31e3cb714281eae4d77c931ba9bdf682f3d7d8f))
+
 ## [2.1.14](https://github.com/rvagg/github-webhook-handler/compare/v2.1.13...v2.1.14) (2026-07-30)
 
 ## [2.1.13](https://github.com/rvagg/github-webhook-handler/compare/v2.1.12...v2.1.13) (2026-07-29)
