@@ -1,3 +1,9 @@
+## [2.1.16](https://github.com/rvagg/github-webhook-handler/compare/v2.1.15...v2.1.16) (2026-08-03)
+
+### Trivial Changes
+
+* **deps-dev:** bump @semantic-release/changelog from 6.0.3 to 7.0.0 ([#78](https://github.com/rvagg/github-webhook-handler/issues/78)) ([875b31b](https://github.com/rvagg/github-webhook-handler/commit/875b31bfed4f18f49891db88e08eac9571b41474))
+
 ## [2.1.15](https://github.com/rvagg/github-webhook-handler/compare/v2.1.14...v2.1.15) (2026-07-30)
 
 ### Trivial Changes
