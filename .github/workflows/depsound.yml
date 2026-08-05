@@ -20,7 +20,7 @@ jobs:
     permissions:
       contents: read # diff the PR's manifests; this job never sees a write token
     steps:
-      - uses: rvagg/depsound-action@e64e9937f8f5d7017446ce4f2375705e6c05a517 # v0.3.3
+      - uses: rvagg/depsound-action@7c7eb2bfc936dc8242f0592f6d7c4f9835510380 # v0.3.6
   post:
     needs: review
     if: ${{ always() && needs.review.result != 'cancelled' }} # a failed review still posts its failure marker
@@ -30,4 +30,4 @@ jobs:
       checks: write        # set the neutral check
       actions: read        # download the report artifact
     steps:
-      - uses: rvagg/depsound-action/post@e64e9937f8f5d7017446ce4f2375705e6c05a517 # v0.3.3
+      - uses: rvagg/depsound-action/post@7c7eb2bfc936dc8242f0592f6d7c4f9835510380 # v0.3.6
