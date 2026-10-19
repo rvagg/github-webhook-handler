@@ -1,3 +1,9 @@
+## [2.1.19](https://github.com/rvagg/github-webhook-handler/compare/v2.1.18...v2.1.19) (2026-10-19)
+
+### Trivial Changes
+
+* **deps:** bump actions/setup-node ([#82](https://github.com/rvagg/github-webhook-handler/issues/82)) ([c299adc](https://github.com/rvagg/github-webhook-handler/commit/c299adcb17f9b11fdc1e884ed334e882e2ede9c0))
+
 ## [2.1.18](https://github.com/rvagg/github-webhook-handler/compare/v2.1.17...v2.1.18) (2026-08-06)
 
 ### Trivial Changes
