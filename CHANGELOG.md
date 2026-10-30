@@ -1,3 +1,9 @@
+## [2.1.20](https://github.com/rvagg/github-webhook-handler/compare/v2.1.19...v2.1.20) (2026-10-30)
+
+### Trivial Changes
+
+* **deps:** bump the github-actions-minor-patch group with 2 updates ([#83](https://github.com/rvagg/github-webhook-handler/issues/83)) ([1b914ed](https://github.com/rvagg/github-webhook-handler/commit/1b914edd4af5ed34cf99d31c4062ae99d29b3f28))
+
 ## [2.1.19](https://github.com/rvagg/github-webhook-handler/compare/v2.1.18...v2.1.19) (2026-10-19)
 
 ### Trivial Changes
